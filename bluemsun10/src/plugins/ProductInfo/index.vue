@@ -17,7 +17,7 @@
     border-radius: 8px; 
     padding: 1vw;
     width: 18vw;
-    height:24.5vw;
+    height:320px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
     transition: all 0.3s ease-in-out; 
     overflow: hidden; 
@@ -46,14 +46,43 @@ h2 {
 .goods-disaplay button:hover {
     background-color: #337ecc; /* 按钮悬停时的背景颜色 */
 }
-@media (max-width: 768px) { /* 当屏幕宽度大于 768px 时 */
+@media (max-width: 768px) { 
 .goods-disaplay {
     padding: 1vw; 
     width: 150px;
-    height:200px;
+    height:250px;
 }
 h2 {
     font-size: 20px; /* 增加字体大小以适应大屏幕 */
 }
 }
+@media (min-width: 1300px) { /* 大屏幕 */
+    .goods-disaplay {
+    /* background-color: #fff; */
+    background-color: rgb(252, 250, 250);
+    border-radius: 8px; 
+    padding: 1vw;
+    width: 18vw;
+    height:380px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    transition: all 0.3s ease-in-out; 
+    overflow: hidden; 
+}
+
+}
+
+@media (min-width: 768px) and (max-width: 1299px) { /* 小屏幕 */
+.goods-disaplay {
+    /* background-color: #fff; */
+    background-color: rgb(252, 250, 250);
+    border-radius: 8px; 
+    padding: 1vw;
+    width: 18vw;
+    height:320px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    transition: all 0.3s ease-in-out; 
+    overflow: hidden; 
+}
+}
+
 </style>

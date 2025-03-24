@@ -27,8 +27,3 @@
     emits('update:visible', false);
   };
   </script>
-  <style>
-    #productName[data-v-c34b08ef] {
-    width: 100px;
-  }
-  </style>

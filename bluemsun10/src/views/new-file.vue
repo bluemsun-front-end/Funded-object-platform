@@ -133,21 +133,75 @@
                       <p id="dialog-title">编辑个人信息</p>
                       <h3>个人基本信息</h3>
                       <div class="basicIn">
-                          <el-table :data="tableData"  style="width: 90%" :row-class-name="tableRowClassName" >
-                              <el-table-column prop="type1"  />
-                              <el-table-column prop="content1"  />
-                              <el-table-column prop="type2" />
-                              <el-table-column prop="content2"   />
-                          </el-table>
-                          
-                      
+                        <el-descriptions :column="2" width="100%" border>
+                          <el-descriptions-item
+                            label="姓名"
+                            label-align="center"
+                            align="center"
+                            label-class-name="my-label"
+                            class-name="my-content"
+                            :width="150"
+                          >
+                            {{ studentInfo.name || '无' }}
+                          </el-descriptions-item>
+                          <el-descriptions-item
+                            label="性别"
+                            label-align="center"
+                            align="center"
+                            label-class-name="my-label"
+                            class-name="my-content"
+                            :width="150"
+                          >
+                            {{ formatSex(studentInfo.gender) || '无' }}
+                          </el-descriptions-item>
+                          <el-descriptions-item
+                            label="学号"
+                            label-align="center"
+                            align="center"
+                            label-class-name="my-label"
+                            class-name="my-content"
+                            :width="150"
+                          >
+                            {{ studentInfo.studentId || '无' }}
+                          </el-descriptions-item>
+                          <el-descriptions-item
+                            label="年级"
+                            label-align="center"
+                            align="center"
+                            label-class-name="my-label"
+                            class-name="my-content"
+                            :width="150"
+                          >
+                          {{ studentInfo.grade || '无' }}
+                          </el-descriptions-item>
+                          <el-descriptions-item
+                            label="学历"
+                            label-align="center"
+                            align="center"
+                            label-class-name="my-label"
+                            class-name="my-content"
+                            :width="150"
+                          >
+                          <el-tag size="small">{{ formatEducation(studentInfo.degree)|| '无'  }}</el-tag>
+                          </el-descriptions-item>
+                          <el-descriptions-item
+                            label="资助等级"
+                            label-align="center"
+                            align="center"
+                            label-class-name="my-label"
+                            class-name="my-content"
+                            :width="150"
+                          >
+                            {{ formatAssistLevel(studentInfo.fundType) || '无' }}
+                          </el-descriptions-item>
+                        </el-descriptions>
                       </div>
                       <h3 class="changeInfomation">更改个人信息</h3>
                       <div class="change">
                           <!-- 婚姻状况下拉框 -->
                           <div class="changeInfor">
                             <el-form-item label="婚姻状况：" >
-                              <el-select v-model="editInfo.marry" placeholder="婚姻状况" style="width: 150px;">
+                              <el-select v-model="editInfo.marry" placeholder="婚姻状况" style="width: 150px;" disabled>
                               <el-option
                                   v-for="item in marryOptions"
                                   :key="item.value"
@@ -176,7 +230,7 @@
                          
                           <div class="changeInfor">
                             <el-form-item label="专&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：" >
-                              <el-select v-model="editInfo.major" placeholder="专业" class="select-width" style="width: 150px;">
+                              <el-select v-model="editInfo.major" placeholder="专业" class="select-width" style="width: 150px;" disabled>
                                   <el-option
                                   v-for="item in majorOptions"
                                   :key="item.value"
@@ -188,7 +242,7 @@
                           </div>
                           <div class="changeInfor">
                             <el-form-item label="学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;历：" >
-                              <el-select v-model="editInfo.degree" placeholder="学历" class="select-width" style="width: 150px;">
+                              <el-select v-model="editInfo.degree" placeholder="学历" class="select-width" style="width: 150px;" disabled>
                                   <el-option
                                   v-for="item in degreeOptions"
                                   :key="item.value"
@@ -214,7 +268,7 @@
                           </div>
                           <div class="changeInfor">
                             <el-form-item label="政治面貌：" >
-                              <el-select v-model="editInfo.political" placeholder="政治面貌" style="width: 150px">
+                              <el-select v-model="editInfo.political" placeholder="政治面貌" style="width: 150px" disabled>
                                   <el-option
                                       v-for="item in politicalOptions"
                                       :key="item.value"
@@ -226,7 +280,7 @@
                           </div>
                           <div class="changeInfor">
                             <el-form-item label="学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;院：" >
-                              <el-select v-model="editInfo.college" placeholder="学院" style="width: 150px">
+                              <el-select v-model="editInfo.college" placeholder="学院" style="width: 150px" disabled>
                                   <el-option
                                       v-for="item in collegeOptions"
                                       :key="item.value"
@@ -238,7 +292,7 @@
                           </div>
                           <div class="changeInfor">
                             <el-form-item label="状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：" >
-                              <el-select v-model="editInfo.status" placeholder="状态" class="select-width" style="width: 150px;">
+                              <el-select v-model="editInfo.status" placeholder="状态" style="width: 150px;" disabled>
                                   <el-option
                                   v-for="item in statusOptions"
                                   :key="item.value"
@@ -262,7 +316,7 @@
                           <div class="changeInfor">
                             <el-form-item label="E&nbsp;&nbsp;-&nbsp;&nbsp;mail：" prop="email">
                               <template #label>
-                                <span style="font-size: 16px;">E&nbsp;-&nbsp;mail：</span>
+                                <span style="font-size: 16px;">&nbsp;E-mail&nbsp;：</span>
                               </template>
                               <el-input v-model="editInfo.email" style="width: 150px" placeholder="e-mail" />
                             </el-form-item>
@@ -277,8 +331,8 @@
               </el-tab-pane>
               <el-tab-pane label="个人处分" class="biaoge,tab-content">
                 <el-table :data="fundPunishVo" height="700" style="width: 100%;" row-height="60">
-                  <el-table-column prop="category" label="处罚类型"  />
-                  <el-table-column prop="punishTime" label="处罚时间"  />
+                  <el-table-column prop="category" label="处罚类型"  width="300"/>
+                  <el-table-column prop="punishTime" label="处罚时间" width="300" sortable/>
                   <el-table-column prop="reason" label="处罚原因"   />
                   <template #empty>
                     <div style="width:100%;height:100%" class="flex items-center justify-center h-100%">
@@ -287,10 +341,11 @@
                   </template>
                 </el-table>
               </el-tab-pane>
-              <el-tab-pane label="个人奖励"  class="biaoge,tab-content">
+
+              <el-tab-pane label="个人奖励" class="biaoge,tab-content">
                 <el-table :data="fundScholarshipVo" height="700" style="width: 100%;" row-height="60">
-                  <el-table-column prop="type" label="奖励类型" />
-                  <el-table-column prop="grantDate" label="授予时间"  />
+                  <el-table-column prop="type" label="奖励类型" width="300" />
+                  <el-table-column prop="grantDate" label="授予时间" width="300" sortable />
                   <el-table-column prop="amount" label="奖励金额" />
                   <template #empty>
                     <div style="width:100%;height:100%" class="flex items-center justify-center h-100%">
@@ -299,7 +354,8 @@
                   </template>
                 </el-table>
               </el-tab-pane>
-              <el-tab-pane label="社会经历" class="tab-content">
+
+              <!-- <el-tab-pane label="社会经历" class="tab-content">
                 <div v-if="showAddExperienceDialog" class="overlay">
                   <div class="edit-dialog add-dialog">
                     <div class="dialog-content">
@@ -354,13 +410,68 @@
                 <el-scrollbar max-height="500px">
                   <el-button type="primary" @click="showAddExperienceDialog = true" class="button1">+添加经历</el-button>
                   <el-table ref="tableRef" row-key="userId" :data="socialExperienceData" style="width: 100%"  >
-                    <el-table-column prop="startDate" label="Start Date"  sortable/>
-                    <el-table-column prop="endDate" label="End Date"  sortable/>
-                    <el-table-column prop="experience" label="Experience" />
+                    <el-table-column prop="startDate" label="开始时间"  sortable/>
+                    <el-table-column prop="endDate" label="结束时间"  sortable/>
+                    <el-table-column prop="experience" label="社会经历" />
                   </el-table>
                </el-scrollbar>
+              </el-tab-pane> -->
+              <el-tab-pane label="社会经历" class="tab-content">
+                <div v-if="showAddExperienceDialog" class="overlay">
+                  <div class="edit-dialog add-dialog">
+                    <div class="dialog-content">
+                      <div class="biaoti">
+                        <p id="dialog-title">添加社会经历</p>
+                        <span class="close" @click="showAddExperienceDialog = false">&times;</span>
+                      </div>
+                      <div class="change2">
+                        <div class="changeInfor2">
+                          <el-text class="mx-1">开始日期：</el-text>
+                          <el-date-picker
+                            v-model="newExperience.startDate"
+                            type="date"
+                            placeholder="选择日期"
+                            value-format="YYYY-MM-DD"
+                            style="width: 150px;"
+                          ></el-date-picker>
+                        </div>
+                        <div class="changeInfor2">
+                          <el-text class="mx-1">结束日期：</el-text>
+                          <el-date-picker
+                            v-model="newExperience.endDate"
+                            type="date"
+                            placeholder="选择日期"
+                            value-format="YYYY-MM-DD"
+                            :size="size"
+                            style="width: 150px;"
+                          />
+                        </div>
+                        <div class="changeInfor2">
+                          <el-text class="mx-1">经历描述：</el-text>
+                          <br>
+                          <el-input
+                            v-model="newExperience.experience"
+                            style="resize:none;margin-top:10px;width: 550px"
+                            :rows="2"
+                            type="textarea"
+                            placeholder="Please input"
+                            resize="none"
+                          />
+                        </div>
+                      </div>
+                      <el-button class="btn" type="primary" plain @click="addExperience">保存</el-button>
+                      <el-button class="btn" type="primary" plain @click="showAddExperienceDialog = false">取消</el-button>
+                    </div>
+                  </div>
+                </div>
+                <el-button type="primary" @click="showAddExperienceDialog = true" class="button1">+添加经历</el-button>
+                <el-table :data="socialExperienceData" height="430px" style="width: 100%">
+                    <el-table-column prop="startDate" label="开始时间" width="240" sortable />
+                    <el-table-column prop="endDate" label="结束时间" width="240" sortable />
+                    <el-table-column prop="experience" label="社会经历" />
+               </el-table>
               </el-tab-pane>
-          </el-tabs>
+            </el-tabs>
       </div>
 
   </div>
@@ -409,31 +520,23 @@ email: [
   });
   const showAddExperienceDialog = ref(false); // 初始值为 false
 
-  const editInfo = ref({
-      degree: studentInfo.value.degree || '',
-      grade: studentInfo.value.grade || '',
-      political: studentInfo.value.political || '',
-      marry: studentInfo.value.marry || '',
-      apartment: studentInfo.value.apartment || '',
-      dormitory: studentInfo.value.dormitory || '',
-      homeAddress: studentInfo.value.homeAddress || '',
-      college: studentInfo.value.college || '',
-      telephone: studentInfo.value.telephone || '',
-      major: studentInfo.value.major || '',
-      email: studentInfo.value.email || '',
-      status: studentInfo.value.status || '',
-      birthday: studentInfo.value.birthday|| '',
-      fundType: studentInfo.value.fundType || '', 
-  });
-
-  // 定义表格数据数组
-  interface TableDataItem {
-    type1: string;
-    content1: string;
-    type2: string;
-    content2: string;
-  }
-  const tableData = ref<TableDataItem[]>([]);
+  // 初始化 editInfo 对象
+const editInfo = reactive({
+  degree: '',
+  grade: '',
+  political: '',
+  marry: '',
+  apartment: '',
+  dormitory: '',
+  homeAddress: '',
+  college: '',
+  telephone: '',
+  major: '',
+  email: '',
+  status: '',
+  birthday: '',
+  fundType: '',
+});
   const authToken = localStorage.getItem('token');
   axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   const fetchStudentInfo = async () => {
@@ -452,33 +555,21 @@ email: [
         type: formatFundType(item.type),
       }));
       socialExperienceData.value = response.data.data.fundProjectVo,
-      // 将后端数据映射到 tableData
-      tableData.value = [
-          {
-          type1: '姓名',
-          content1: studentInfo.value.name || '无',
-          type2: '性别',
-          content2:  formatSex(studentInfo.value.gender)|| '无',
-          },
-          {
-            type1: '学号',
-            content1: studentInfo.value.studentId || '无',
-            type2: '年级',
-            content2: studentInfo.value.grade || '无',
-          },
-          {
-            type1: '学院',
-            content1: formatPoliticalAppearance(studentInfo.value.college) || '无',
-            type2: '民族',
-            content2: formatEthnicGroup(studentInfo.value.nationality) || '无',
-          },
-          {
-            type1: '学历',
-            content1: formatEducation(studentInfo.value.degree)|| '无',
-            type2: '资助等级',
-            content2: formatAssistLevel(studentInfo.value.fundType) || '无',
-          },
-      ]
+       // 初始化 editInfo 对象
+      editInfo.degree = studentInfo.value.degree || '';
+      editInfo.grade = studentInfo.value.grade || '';
+      editInfo.political = studentInfo.value.political || '';
+      editInfo.marry = studentInfo.value.marry || '';
+      editInfo.apartment = studentInfo.value.apartment || '';
+      editInfo.dormitory = studentInfo.value.dormitory || '';
+      editInfo.homeAddress = studentInfo.value.homeAddress || '';
+      editInfo.college = studentInfo.value.college || '';
+      editInfo.telephone = studentInfo.value.telephone || '';
+      editInfo.major = studentInfo.value.major || '';
+      editInfo.email = studentInfo.value.email || '';
+      editInfo.status = studentInfo.value.status || '';
+      editInfo.birthday = studentInfo.value.birthday || '';
+      editInfo.fundType = studentInfo.value.fundType || '';
        // 更新其他信息
        newExperience.value = {
         startDate:newExperience.value.startDate || '',
@@ -498,58 +589,42 @@ email: [
       content1:any,
       content2:any,
   }
-
-  const tableRowClassName = ({
-      row,
-      rowIndex,
-  }: {
-      row: User
-      rowIndex: number
-  }) => {
-      if (rowIndex === 1) {
-          return 'warning-row'
-      } else if (rowIndex === 3) {
-          return 'success-row'
-      }
-  return ''
-  }
   const editForm = ref(null);
 
 const saveEditInfo = async () => {
-if (editForm.value) {
-  try {
-    await editForm.value.validate();
-    const dataToSubmit = {
-          degree: editInfo.value.degree,
-          grade: editInfo.value.grade,
-          college: editInfo.value.college,
-          email: editInfo.value.email,
-          apartment: editInfo.value.apartment,
-          dormitory: editInfo.value.dormitory,
-          telephone: editInfo.value.telephone,
-          homeAddress: editInfo.value.homeAddress,
-          political:  editInfo.value.political,
-          birthday: editInfo.value.birthday,
-          major: editInfo.value.major,
-          marry: editInfo.value.marry,
-          };
-          const response = await axios.post('http://106.54.24.243:8080/grow/userInfo/updateUserInfo', dataToSubmit);
-          if (response.data.code === 200) {
-
-                  console.log('信息更新成功');
-                  await fetchStudentInfo();
-                  showEditDialog.value = false;        
-          } 
-          else {
-            console.error('信息更新失败', response.data.msg);
-          }
-    
-    // 如果验证通过，执行后续的保存操作
-  } catch (error) {
-    // 验证失败，处理错误
-    console.error('请求失败', error);
+  if (editForm.value) {
+    try {
+      await editForm.value.validate();
+      const dataToSubmit = {
+        degree: editInfo.degree,
+        grade: editInfo.grade,
+        college: editInfo.college,
+        email: editInfo.email,
+        apartment: editInfo.apartment,
+        dormitory: editInfo.dormitory,
+        telephone: editInfo.telephone,
+        homeAddress: editInfo.homeAddress,
+        political: editInfo.political,
+        birthday: editInfo.birthday,
+        major: editInfo.major,
+        marry: editInfo.marry,
+        status: editInfo.status,
+      };
+      const response = await axios.post('http://106.54.24.243:8080/grow/userInfo/updateUserInfo', dataToSubmit);
+      if (response.data.code === 200) {
+        console.log('信息更新成功');
+        ElMessage.success('信息更新成功');
+        await fetchStudentInfo();
+        showEditDialog.value = false;
+      } else {
+        console.error('信息更新失败', response.data.msg);
+        ElMessage.error(response.data.msg);
+      }
+    } catch (error) {
+      console.error('请求失败', error);
+      ElMessage.error('请求失败');
+    }
   }
-}
 };
   
   //社会经历
@@ -564,9 +639,11 @@ if (editForm.value) {
       });
       if (response.data.code === 200) {
         console.log('Experience added successfully');
+        ElMessage.success('社会经历添加成功');
         await fetchStudentInfo();
         showAddExperienceDialog.value = false;
       } else {
+        ElMessage.error('社会经历添加成功');
         console.error('信息更新失败', response.data.msg);
       }
     } catch (error) {
@@ -1113,16 +1190,14 @@ default:
 //状态
 const formatStatus = (Status: string): string => {
 switch (Status) {
-case '0':
-  return '在校';
-case '1':
-  return '肄业';
-case '2':
-  return '离校';
-case '3':
-  return '未知';
-default:
-  return '未知';
+    case '0':
+      return '在校'
+    case '1':
+      return '肄业'
+    case '2':
+      return '离校'
+    default:
+      return '未知'
 }
 }
 //学历
@@ -1198,6 +1273,12 @@ default:
 
 <style>
 
+:deep(.my-label) {
+  background: var(--el-color-success-light-9) !important;
+}
+:deep(.my-content) {
+  background: var(--el-color-danger-light-9);
+}
 .el-table tr {
     background-color: var(--el-table-tr-bg-color);
     height:55px;

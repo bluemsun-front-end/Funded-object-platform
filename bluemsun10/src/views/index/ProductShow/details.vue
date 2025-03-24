@@ -2,7 +2,7 @@
     <el-dialog
       title="商品详情"
       :visible.sync="visible"
-      width="30%"
+      width="50%"
       @close="closeDialog"
     >
       <div v-if="product">
@@ -27,3 +27,8 @@
     emits('update:visible', false);
   };
   </script>
+  <style>
+    #productName[data-v-c34b08ef] {
+    width: 100px;
+  }
+  </style>

@@ -207,7 +207,7 @@ body {
     cursor: pointer;
 }
 #productName{
-  width:100px;
+  width:150px;
 }
 .title{
   display:flex;

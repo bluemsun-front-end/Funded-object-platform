@@ -20,7 +20,7 @@
           <div class="form_main">
           <el-table :data="items" @selection-change="selected" border style="width: 1260px; margin:3px 0;">
               <el-table-column type="selection" width="50"/>
-              <el-table-column prop="name" label="商品名称" width="210"/>
+              <el-table-column prop="name" label="商品名称" width="210" />
               <el-table-column label="商品图片" width="278" height="120">
                   <template #default="scope">
                       <el-image style="width: auto; height: 100px" :src="scope.row.imageUrlUrl" />
@@ -56,7 +56,7 @@
       <el-dialog v-model="addRecords" title="增加货物库存" width="500" center="true" align-center >
       <el-form :model="form1" ref="formRef" :rules="rules1">
         <el-form-item label="商品名称：" :label-width="formLabelWidth" style="padding-bottom: 20px;" prop="name">
-          {{name}}
+         <span style="width:340px" class="over">{{name}}</span>
         </el-form-item>
         <el-form-item label="进货数量：" :label-width="formLabelWidth" prop="amount2">
           <el-input v-model="form1.amount2" autocomplete="off" style="width:340px"/>
@@ -150,16 +150,16 @@
           :src="imageUrlUrl"
         />
       </el-descriptions-item>
-      <el-descriptions-item label="名称" :width="100">{{ruleForm.name}}</el-descriptions-item>
-      <el-descriptions-item label="商品类型" :width="100">{{ruleForm.type}}</el-descriptions-item>
-      <el-descriptions-item label="价格" :width="100">{{ruleForm.price}}</el-descriptions-item>
-       <el-descriptions-item label="货币类型" :width="100">{{ruleForm.currencyType}}</el-descriptions-item>
-      <el-descriptions-item label="限额" :width="100">{{ruleForm.limitNum}}</el-descriptions-item>
+      <el-descriptions-item label="名称" :width="100" class-name="my-class">{{ruleForm.name}}</el-descriptions-item>
+      <el-descriptions-item label="商品类型" :width="100" class-name="my-class">{{ruleForm.type}}</el-descriptions-item>
+      <el-descriptions-item label="价格" :width="100" class-name="my-class">{{ruleForm.price}}</el-descriptions-item>
+       <el-descriptions-item label="货币类型" :width="100" class-name="my-class">{{ruleForm.currencyType}}</el-descriptions-item>
+      <el-descriptions-item label="限额" :width="100" class-name="my-class">{{ruleForm.limitNum}}</el-descriptions-item>
       <el-descriptions-item label="库存" :width="100">
         {{ruleForm.amount}}
       </el-descriptions-item>
       <!-- <el-descriptions-item label="限制类型" :width="100">{{ruleForm.limitType}}</el-descriptions-item> -->
-      <el-descriptions-item label="状态" :width="100" >
+      <el-descriptions-item label="状态" :width="100" class-name="my-class">
       {{ruleForm.status}}
       </el-descriptions-item>
       <el-descriptions-item label="介绍" :width="100" truncated class-name="my-class" label-class-name="my-label">
@@ -492,7 +492,6 @@
 
               addGoods()
               fetchGoods(currentPage.value)
-              console.log('是的');
           }
           else{
               modifyGoods(indexx.value)
@@ -506,7 +505,7 @@
   }
   const addGoods = async () => {
       console.log(ruleForm.status);
-      status.value=ruleForm.status[0]=='上架中'?'0':'1';
+      status.value=(ruleForm.status==='上架中'?'0':'1')
       try {
       const requestData = {
           name: ruleForm.name,
@@ -597,7 +596,7 @@
         loadflag.value=false
       }
       else
-        ElMessage.error('')
+        ElMessage.error('上传图片失败')
     } catch (error) {
       ElMessage.error('上传图片失败')
     }
@@ -740,6 +739,7 @@
   </script>
   
   <style scoped>
+  
   ::v-deep  .el-descriptions-item__content {
     max-width: 100px;  
   }

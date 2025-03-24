@@ -165,7 +165,7 @@ const log = async () => {
       router.push('/framework')
     }
     else {
-      console.log(response.data.msg);
+      // console.log(response.data.msg);
       ElMessage.error(response.data.msg)
     }
   } catch (error) {

@@ -76,8 +76,8 @@ function closeModal() {
   font-size: 21px;
   font-weight: 800;
   color: rgb(122, 121, 121);
-  margin-bottom: 5px;
-  margin-top: 5px;
+  margin-bottom: 0.8vw;
+  margin-top: 0.8vw;
 }
 
 .all-goods {
@@ -104,7 +104,7 @@ function closeModal() {
 
 img {
   width: 100%;
-  height:135px;
+  height:9.5vw;
   border-top-left-radius: 8px; /* 圆角 */
   border-top-right-radius: 8px; /* 圆角 */
 }
@@ -120,7 +120,8 @@ img:hover {
   flex-direction: column;
   align-items: center;
   padding: 8px;
-   background-color: rgb(235.9, 245.3, 255); 
+  margin-top:1.5vw;
+  background-color: rgb(235.9, 245.3, 255); 
   border-bottom-left-radius: 8px; 
   border-bottom-right-radius: 8px; 
 }
@@ -144,7 +145,7 @@ img:hover {
 }
 @media (max-width: 768px) { /* 针对手机端的样式调整 */
   .item {
-    width: calc(50% - 10px); /* 手机端占满整个屏幕宽度 */
+    width: 155px; /* 手机端占满整个屏幕宽度 */
     margin: 5px;
   }
 
@@ -161,7 +162,7 @@ img:hover {
   flex-direction: column;
   align-items: center;
   padding: 8px;
-   background-color: rgb(235.9, 245.3, 255); 
+  background-color: rgb(235.9, 245.3, 255); 
   border-bottom-left-radius: 8px; 
   border-bottom-right-radius: 8px; 
   font-size: 5px;
@@ -171,4 +172,103 @@ img:hover {
     font-size:5px;
   }
 }
+@media (min-width: 1200px) { /* 大屏幕 */
+  .item {
+    width: calc(20% - 30px); /* 一行五个 */
+    margin: 15px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) { /* 小屏幕 */
+  .item {
+    width: calc(25% - 30px); /* 一行四个 */
+    margin: 15px;
+  }
+}
+
+@media (max-width: 767px) { /* 更小屏幕 */
+  .item {
+    width: calc(50% - 30px); /* 一行两个 */
+    margin: 15px;
+  }
+}
 </style>
+<!-- <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.title {
+  text-align: center;
+  font-size: 21px;
+  font-weight: 800;
+  color: rgb(122, 121, 121);
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.all-goods {
+  padding: 30px;
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.item {
+  width: calc(25% - 30px);
+  /* width: 200px; 固定宽度 */
+  margin-bottom: 30px;
+  box-sizing: border-box; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center; 
+  text-align: center; 
+}
+
+img {
+  width: 100%;
+  height: 200px; /* 固定高度 */
+  border-top-left-radius: 8px; /* 圆角 */
+  border-top-right-radius: 8px; /* 圆角 */
+}
+
+img:hover {
+  transform: scale(1.1);
+  transition: all 0.2s;
+}
+
+.details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  background-color: rgb(235.9, 245.3, 255); 
+  border-bottom-left-radius: 8px; 
+  border-bottom-right-radius: 8px; 
+}
+
+.price,
+.num {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  margin-bottom: 8px;
+}
+
+.btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+}
+
+.image-darken {
+  filter: grayscale(100%) opacity(0.5); 
+}
+</style> -->

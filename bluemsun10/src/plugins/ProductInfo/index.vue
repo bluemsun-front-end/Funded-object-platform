@@ -15,9 +15,9 @@
     /* background-color: #fff; */
     background-color: rgb(252, 250, 250);
     border-radius: 8px; 
-    padding: 1.5vw;
-    width: 225px;
-    height:320px;
+    padding: 1vw;
+    width: 18vw;
+    height:24.5vw;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
     transition: all 0.3s ease-in-out; 
     overflow: hidden; 
@@ -47,14 +47,13 @@ h2 {
     background-color: #337ecc; /* 按钮悬停时的背景颜色 */
 }
 @media (max-width: 768px) { /* 当屏幕宽度大于 768px 时 */
-  .goods-disaplay {
+.goods-disaplay {
     padding: 1vw; 
     width: 150px;
     height:200px;
-  }
-
-  h2 {
+}
+h2 {
     font-size: 20px; /* 增加字体大小以适应大屏幕 */
-  }
+}
 }
 </style>

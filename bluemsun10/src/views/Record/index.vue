@@ -40,7 +40,7 @@
    <el-descriptions title="" border>
   <el-descriptions-item
     :rowspan="2"
-    :width="140"
+    :width="80"
     label="商品图片"
     align="center"
     align-center

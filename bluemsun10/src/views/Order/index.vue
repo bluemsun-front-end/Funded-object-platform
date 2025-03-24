@@ -94,20 +94,20 @@
       align-center
     >
       <el-image
-        style="width: auto; height: 100px"
+        style="width: auto; height: 100px;"
         :src="imageUrl"
       />
     </el-descriptions-item>
-    <el-descriptions-item label="名称" :width="100">{{goodsName}}</el-descriptions-item>
-    <el-descriptions-item label="价格" :width="100">{{price}}</el-descriptions-item>
-    <el-descriptions-item label="货币类型" :width="100">{{currencyType}}</el-descriptions-item>
-    <el-descriptions-item label="数量" :width="100">{{amount}}
+    <el-descriptions-item label="名称" :width="100" class-name="my-class">{{goodsName}}</el-descriptions-item>
+    <el-descriptions-item label="价格" :width="100" class-name="my-class">{{price}}</el-descriptions-item>
+    <el-descriptions-item label="货币类型" :width="100" class-name="my-class">{{currencyType}}</el-descriptions-item>
+    <el-descriptions-item label="数量" :width="100" class-name="my-class">{{amount}}
     </el-descriptions-item>
     <el-descriptions-item label="商品介绍" class-name="my-class" label-class-name="my-label" :width="100">
       {{intro}}
     </el-descriptions-item>
   </el-descriptions>
-  <el-pagination layout="prev, pager, next" :total="detailTotal" v-model="currentPage2"  :page-size="12"
+  <el-pagination layout="prev, pager, next" :total="detailTotal" v-model="currentPage2"  :page-size="1"
           @current-change="handlePageChange2" id="pagenation"/>
   </el-dialog>
   </main>

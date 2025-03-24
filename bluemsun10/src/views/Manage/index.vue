@@ -460,7 +460,7 @@
           }
       }    
     } catch (error) {
-      // console.error('请求商品数据失败:', error);
+      console.error('请求商品数据失败:', error);
     }
   };
   

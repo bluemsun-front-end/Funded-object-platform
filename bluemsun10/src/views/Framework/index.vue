@@ -2,7 +2,7 @@
 <div>
     <el-container class="layout-container-demo" style="height: 100vh">
     <!-- 左侧边栏 -->
-    <el-aside width="200px" class="sidebar">
+    <el-aside width="16vw" class="sidebar">
       <el-scrollbar style="height: 100%">
         <el-menu :default-active="activeMenu" :default-openeds="['1']" class="sidebar-menu">
           <!-- 侧边栏标题 -->
@@ -192,14 +192,17 @@ import { onBeforeUnmount } from 'vue'
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   color: #333;
 }
+.header{
+  height: 8vh;
+}
 .title {
   color: #2d4059;
   font-family: 'Arial', sans-serif;
-  font-size: 30px;
+  font-size: 2.2vw;
   font-weight: bold;
   /* margin-top: 10px;
   margin-bottom: 10px; */
-  margin: 10px auto;
+  margin: 1.3vh auto;
   text-align: center;
   align-content: center;
   letter-spacing: 0.1em;
@@ -221,18 +224,18 @@ import { onBeforeUnmount } from 'vue'
   background-color: #1f2739;
   text-align: center;
   font-weight: bold;
-  height: 60px;
-  line-height: 60px;
-  font-size: 18px;
+  height:8vh;
+  line-height: 8vh;
+  font-size: 1.3vw;
   color: #ecf0f1; /* 浅色字体 */
 }
 
 /* 侧边栏菜单项 */
 .menu-item {
   font-weight: 700;
-  font-size: 14px;
+  font-size: 1.1vw;
   color: #bdc3c7;
-  padding-left: 20px;
+  padding-left: 1vw;
   background-color: #283142; /* 默认背景透明，与侧边栏背景一致 */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -256,9 +259,9 @@ import { onBeforeUnmount } from 'vue'
 /* 退出登录按钮 */
 .logout-button {
   margin-top: auto; /* 使退出登录按钮靠下 */
-  font-size: 14px;
+  font-size: 1.1vw;
   color: #e74c3c; /* 红色字体 */
-  padding-left: 20px;
+  padding-left: 2vw;
   background-color: #283142; /* 透明背景，与侧边栏背景一致**/
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -272,7 +275,7 @@ import { onBeforeUnmount } from 'vue'
 
 /* 主内容区域 */
 .layout-container-demo .el-main {
-  padding: 20px;
+  padding: 1.5vw;
   background-color: #f4f4f4; /* 浅灰色背景 */
 }
 /* 工具栏 */
@@ -286,24 +289,27 @@ import { onBeforeUnmount } from 'vue'
 /* 调整侧边栏和菜单项的高度 */
 .layout-container-demo .el-menu-item,
 .layout-container-demo .el-sub-menu {
-  height: 60px;
-  line-height: 60px;
+  height: 8vh;
+  line-height: 8vh;
+}
+.el-menu-item{
+  padding: 2vw 4vh;
 }
 /* 模态框样式 */
 .el-dialog {
-  border-radius: 10px; /* 圆角 */
+  border-radius: 1vw; /* 圆角 */
   background-color: #f9f9f9; /* 浅灰色背景 */
 }
 
 .el-dialog__header {
   background-color: #3498db; /* 蓝色背景 */
   color: #fff; /* 白色文字 */
-  font-size: 18px; /* 标题字体大小 */
+  font-size: 1.4vw; /* 标题字体大小 */
   font-weight: bold;
 }
 
 .el-dialog__body {
-  font-size: 16px;
+  font-size: 1.28vw;
   color: #333;
   text-align: center; /* 内容居中 */
 }
@@ -311,13 +317,13 @@ import { onBeforeUnmount } from 'vue'
 .el-dialog__footer {
   display: flex;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 0.8vw 3.2vh;
 }
 
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 0.8vw;
 }
 
 .cancel-btn {
@@ -344,7 +350,7 @@ import { onBeforeUnmount } from 'vue'
 /* 模态框内容居中 */
 .el-dialog__body {
   text-align: center; /* 使内容居中 */
-  font-size: 16px;
+  font-size: 1.28vw;
   color: #333;
 }
 
@@ -353,7 +359,7 @@ import { onBeforeUnmount } from 'vue'
   justify-content: center;
   align-items: center;
   height: 100%;
-  font-size: 16px;
+  font-size: 1.28vw;
   color: #333;
 }
 </style>

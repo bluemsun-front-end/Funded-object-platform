@@ -524,14 +524,13 @@ onMounted(() => {
 .form-container {
   background-color: #fff; /* 白色背景 */
   color: #333; /* 深色文本 */
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0px 30px;
+  width: 45vw;
+  padding: 0px 0px;
 }
 /* 标题样式 */
 h2 {
   text-align: center;
-  font-size: 28px;
+  font-size: 2.1vw;
   margin-bottom: 40px;
   color: #2d4059; /* 标题使用蓝色 */
   font-weight: 600;

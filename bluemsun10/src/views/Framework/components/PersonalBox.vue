@@ -8,7 +8,7 @@
           <el-col :span="24">
             <div class="avatar-wrapper" @mouseenter="isHover = true" @mouseleave="isHover = false" @click="triggerFileInput">
               <el-avatar 
-                :size="120" 
+                :size="120"
                 :src="circleUrl" 
                 class="avatar-image"
               />
@@ -67,12 +67,10 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { onMounted } from 'vue'
-import { reactive, toRefs } from 'vue'
+import { reactive, toRefs,computed } from 'vue'
 import { ElMessage } from 'element-plus'
 // import { defineEmits } from 'vue'
 // const emit = defineEmits(['role'])
-
-
 const state = reactive({
   circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
   isHover: false
@@ -197,18 +195,17 @@ const triggerFileInput = () => {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 4px;
-  background-color: rgba(0, 0, 0, 0.2);
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: white;
-  font-size: 18px;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 1.4vw;
   font-weight: bold;
   border-radius: 50%;
-  padding: 10px;
-  transition: opacity 0.3s ease;
+  padding: 0.7vw;
+  transition: opacity 0.6s ease;
 }
 
 /* 隐藏文件输入框 */
@@ -220,13 +217,13 @@ const triggerFileInput = () => {
 
 /* 背景渐变 */
 .profile-container {
-  margin-top: 20px;
+  margin-top: 1.5vw;
 }
 
 /* 个人信息盒子 */
 .profile-box {
-  width: 300px;
-  padding: 30px;
+  width: 20vw;
+  padding: 2.3vw;
   border-radius: 20px;
   background-color: #fff;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
@@ -244,7 +241,7 @@ const triggerFileInput = () => {
 
 /* 头像 */
 .avatar {
-  margin-bottom: 20px;
+  margin-bottom: 1.5vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -253,8 +250,8 @@ const triggerFileInput = () => {
   text-align: center;
 }
 .demo-basic .sub-title {
-  margin-bottom: 10px;
-  font-size: 14px;
+  margin-bottom: 1.5vw;
+  font-size: 1.1vw;
   color: var(--el-text-color-secondary);
 }
 .demo-basic .demo-basic--circle,
@@ -274,16 +271,16 @@ const triggerFileInput = () => {
 }
 /* 个人信息区域 */
 .info {
-  margin-top: 15px;
+  margin-top: 1.1vw;
   color: #333;
 }
 
 /* 姓名样式 */
 .name {
-  font-size: 24px;
+  font-size: 1.85vw;
   font-weight: bold;
   color: #2d4059;
-  margin-bottom: 20px;
+  margin-bottom:4vh;
 }
 
 /* 信息项 */
@@ -291,14 +288,14 @@ const triggerFileInput = () => {
   display: flex;
   align-items: center;
   justify-content: start;
-  margin-bottom: 15px;
-  font-size: 16px;
+  margin-bottom: 2vh;
+  font-size: 1.18vw;
   color: #555;
 }
 
 .info-item i {
-  font-size: 20px;
-  margin-right: 10px;
+  font-size: 15vw;
+  margin-right: 0.5vw;
   color: #3f72af;
 }
 

@@ -5,51 +5,49 @@
     <div class="cart-card">
       <div class="cart-container">
        
-          <!-- 全选按钮 -->
-          <div>
-            <el-checkbox class="choose" v-model="isAllSelected" @change="toggleSelectAll">全选</el-checkbox>
+          <!-- 移除原来的全选按钮 -->
+          <div class="header-container">
+            <div class="selected-count" v-if="selectedItems.length > 0">
+              已选择 {{ selectedItems.length }} 个商品
+            </div>
           </div>
           
           <div class="card-container">
             <!-- 商品卡片 -->
-            <div v-for="item in filteredItems" :key="item.goodsId" class="item-card">
+            <div v-for="item in filteredItems" 
+                 :key="item.goodsId" 
+                 :class="['item-card', {'item-selected': selectedItems.includes(item.goodsId)}]">
               <el-checkbox
                 v-model="selectedItems"
-                @change="updateSelectedTotalPrice"
-                :value="item.goodsId" /> 
+            
+                :value="item.goodsId"
+                @change="updateSelectedTotalPrice" /> 
 
                 <div class="item-image-container">
-
                   <img :src="item.imageUrlUrl" alt="商品图片" class="item-image" /> 
-
-               <div class="zoom-card">
-                    <img class="zoom-image" :src=item.imageUrlUrl alt="放大图片" />
-               </div> 
-
                 </div>
             
-
               <div class="item-info">
-                <el-tooltip :content=item.goodsName  placement="top">
-                  <h3 class="item-name">{{ item.goodsName }}</h3> 
-              
-                </el-tooltip> 
-               
-                <p class="item-price">{{ formatPrice(item) }}</p>
-                <el-input-number
-                  v-model="item.num"
-                  :min="1"
-                  :max="item.limitNum"
-                 @change="(value) => handleQuantityChange(item, value)"
-                  class="quantity-input"
-                />
-                <p class="currency-type">货币类型: {{ item.currencyType === '0' ? '日用币' : '服装币' }}</p>
-                <el-button type="danger" @click="removeSelectedItems(item.goodsId)" class="remove">移除</el-button>
+                <div class="item-details">
+                  <el-tooltip :content=item.goodsName placement="top">
+                    <h3 class="item-name">{{ item.goodsName }}</h3>
+                  </el-tooltip>
+                  <p class="item-price">{{ formatPrice(item).replace('¥', '') }}</p>
+                  <p class="currency-type">货币类型: {{ item.currencyType === '0' ? '日用币' : '服装币' }}</p>
+                </div>
+                
+                <div class="item-actions">
+                  <el-input-number
+                    v-model="item.num"
+                    :min="1"
+                    :max="item.limitNum"
+                    @change="(value) => handleQuantityChange(item, value)"
+                    class="quantity-input"
+                  />
+                  <el-button type="danger" @click="removeSelectedItems(item.goodsId)" class="remove">移除</el-button>
+                </div>
               </div>
-            </div> 
-
-            
-
+            </div>
           </div>
           
           <!-- 购物车为空的展示 -->
@@ -59,45 +57,63 @@
             <el-button type="primary" class="empty-cart-button" @click="toHome">继续购物</el-button>
           </div>
 
-          <!-- 结算信息 -->
-       
-
-          <!-- 底部结算按钮 -->
-      <div class="foot">
-          <div class="cart-total">
-               <strong>服装币: ¥{{ clothingTotal.toFixed(2) }}</strong>
-             <br />
-               <strong>日用币: ¥{{ dailyTotal.toFixed(2) }}</strong>
-          </div>
-  
-          <div class="spacing"></div>
-
-            <div class="button-group">
-              <el-button type="success" @click="checkout" class="success">结算 </el-button> 
-
-      
-              <!-- 确认结算 --> 
-              <el-dialog
-            v-model="checkoutInfo"
-            title="确认结算"
-            width="500px"
-        >
-            <div>
-                <p>服装币总额: ¥{{ clothingTotal.toFixed(2) }}</p>
-                <p>日用币总额: ¥{{ dailyTotal.toFixed(2) }}</p>
+          <!-- 底部结算区域重新设计 -->
+          <div class="foot">
+            <!-- 添加全选按钮到底部 -->
+            <div class="foot-left">
+              <el-checkbox 
+                class="choose" 
+                v-model="isAllSelected" 
+                @change="toggleSelectAll">全选</el-checkbox>
             </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="checkoutInfo = false">取消</el-button>
-                <el-button type="primary" @click="reCheckout">确认结算</el-button>
-            </span>
-        </el-dialog>
-
-
-
-
+            
+            <div class="foot-middle">
+              <div class="currency-info">
+                <span>日用币: {{ dailyTotal.toFixed(2) }}</span>
+                <span>服装币: {{ clothingTotal.toFixed(2) }}</span>
+              </div>
             </div>
+
+            <div class="foot-right">
+              <el-button 
+                :type="selectedItems.length > 0 ? 'success' : 'info'" 
+                @click="checkout" 
+                class="checkout-button"
+                :disabled="selectedItems.length === 0"
+              >
+                结算 {{ selectedItems.length > 0 ? `(${selectedItems.length})` : '' }}
+              </el-button> 
+            </div>
+
+            <!-- 确认结算对话框 --> 
+            <el-dialog
+              v-model="checkoutInfo"
+              title="确认结算"
+              width="500px"
+              class="checkout-dialog"
+            >
+              <div class="checkout-details">
+                <div class="checkout-item">
+                  <span>服装币总额:</span>
+                  <span class="price">{{ clothingTotal.toFixed(2) }}</span>
+                </div>
+                <div class="checkout-item">
+                  <span>日用币总额:</span>
+                  <span class="price">{{ dailyTotal.toFixed(2) }}</span>
+                </div>
+                <div class="checkout-item" v-if="selectedItems.length > 0">
+                  <span>已选商品:</span>
+                  <span>{{ selectedItems.length }}件</span>
+                </div>
+              </div>
+              <template #footer>
+                <div class="dialog-footer">
+                  <el-button @click="checkoutInfo = false">取消</el-button>
+                  <el-button type="primary" @click="reCheckout">确认结算</el-button>
+                </div>
+              </template>
+            </el-dialog>
           </div>
-        
       </div>
     </div>
   </div>
@@ -147,303 +163,491 @@
   cartStore.updateItemQuantity(item.goodsId, value); // 调用 Pinia 方法更新数量
 };
 
+  // 确保全选功能正常
+  const handleSelectAll = (val) => {
+    toggleSelectAll(val);
+  };
+
+  // 确保单个选择正常
+  const handleItemSelect = () => {
+    updateSelectedTotalPrice();
+  };
 </script> 
 
 
 <style lang="css" scoped>
-/* 总价的样式 */ 
-
-
-
-
-
+/* 整体页面样式 */
 .cart-card {
-  border-radius: 10px;
-  padding: 25px; 
+  border-radius: 16px;
+  padding: 40px;
   width: 100%;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  margin: 15px;
-  justify-content: center; 
-  background-color: #bdbdbd; /* 中性灰 */
-  color: #F5F5F5; /* 接近黑色的文字，清晰对比 */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  margin: 24px auto;
+  justify-content: center;
+  background-color: #f5f5f7; /* Apple风格背景色 */
+  color: #1d1d1f;
+  max-width: 1200px;
 }
 
-.cart-card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-
-}
-
-.foot {
+/* 顶部容器 */
+.header-container {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-right: 15vw;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 0 20px;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 16px;
 }
 
-.cart-total {
-  background: linear-gradient(135deg, #f9f9f9, #e0e0e0); /* 柔和的渐变背景 */
-  border-radius: 8px; /* 圆角 */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 柔和的阴影 */
-  padding: 15px 30px; /* 内边距 */
-  font-size: 1.4rem; /* 文字大小 */
-  font-family: 'Roboto', sans-serif; /* 现代字体 */
-  font-weight: 500; /* 半粗字体 */
-  color: #333; /* 深灰文字 */
-  text-align: right; /* 右对齐 */
-  letter-spacing: 1px; /* 增大字间距 */
-  line-height: 1.6; /* 增大行高 */
-  margin-top: 25px; /* 与上方内容保持间距 */
+.selected-count {
+  background-color: #000000; /* Nike风格黑色 */
+  color: white;
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.5px;
 }
 
-.cart-total strong {
-  font-weight: 700; /* 加粗总价 */
-  color: #000; /* 黑色突出显示 */
+.cart-container {
+  padding: 0;
 }
 
-.cart-total:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* 鼠标悬浮时的投影 */
-}
-
-.spacing {
-  height: 20px; /* 设置间距高度 */
-}
-
+/* 调整全选选择框 */
 .choose {
-  margin-left: 15vw;
-  font-size: 1.1rem;
-  color: #555;
+  font-size: 16px;
+  color: #1d1d1f;
+  font-weight: 500;
 }
 
-/* 购物车商品样式 */
+.choose :deep(.el-checkbox__input) {
+  transform: scale(1.6);
+  margin-right: 12px;
+}
+
+.choose :deep(.el-checkbox__label) {
+  font-size: 15px;
+  letter-spacing: 0.3px;
+}
+
+/* 商品卡片容器 */
 .card-container {
-  position: relative; /* 相对定位，确保内容层次清晰 */
-  z-index: 10; /* 确保商品内容位于背景图之上 */
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 20px; /* 商品之间的间距**/
+  gap: 16px;
 }
 
-
+/* 商品卡片样式 */
 .item-card {
   width: 100%;
   max-width: 1000px;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
-  position: relative; /* 添加相对定位，方便子元素绝对定位 */ 
-   background-color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #f0f0f0;
+}
 
+/* 商品卡片选中状态 */
+.item-selected {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e2e2;
 }
 
 .item-card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* 增大商品选择框 */
+.item-card :deep(.el-checkbox__input) {
+  transform: scale(1.6);
+  margin-right: 24px;
+}
 
-
+/* 商品图片容器 */
 .item-image-container {
-  position: relative;
-  width: 200px; /* 商品图片的宽度 */
-  height: 200px; /* 商品图片的高度 */
-  margin-right: 30px; /* 右侧留空白，避免与右侧信息重叠 */
+  width: 130px;
+  height: 130px;
+  margin-right: 32px;
   display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
-  border-radius: 10px; /* 圆角 */
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  overflow: hidden;
 }
 
 .item-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 保证图片比例填充容器 */
-  border-radius: 10px; /* 与容器保持一致 */
-  transition: transform 0.3s ease; /* 平滑过渡 */
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  transition: transform 0.4s ease;
 }
 
-
-.zoom-card {
-  position: absolute;
-  top: 0;
-  right: -300px; /* 放大卡片位于图片的右侧 */
-  width: 300px; /* 放大卡片的宽度 */
- 
-  border-radius: 13px;
-  display: none; /* 默认隐藏 */
- 
-  justify-content: center;
-  align-items: center;
-
-} 
-
-.zoom-image {
-  width: 100%;
-  object-fit: cover;
-  border-radius: 20px;
+.item-image-container:hover .item-image {
+  transform: scale(1.08);
 }
 
-/* 鼠标悬停在商品图片上时的效果 */
-.item-image-container:hover .zoom-card {
-  display: flex; /* 显示放大卡片 */
-}
-
-
-
-.item-image-container:hover .zoom-image {
-  width: 260px; /* 固定宽度 */
- height: 210px;
-  object-fit: cover; /* 确保图片比例适配 */
-  transition: width 0.3s ease, height 0.3s ease; /* 平滑过渡效果 */
-}
-
+/* 商品信息布局 */
 .item-info {
   display: flex;
-  flex-direction: row;
-  gap: 150px; 
+  flex: 1;
   justify-content: space-between;
-  text-align: left; 
   align-items: center;
 }
 
+.item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+/* 商品名称样式 */
 .item-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #4CAF50; /* 保持绿色 */
-  letter-spacing: 0.7px;
-  line-height: 1.4; /* 增加行高，使文字不堆在一起 */ 
-  max-width: 200px; /* 限制最大宽度 */
+  font-size: 17px;
+  font-weight: 600;
+  color: #1d1d1f; /* Apple风格文字颜色 */
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+  max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin: 0;
 }
 
+/* 商品价格样式 */
 .item-price {
-  font-size: 1.2rem;
+  font-size: 24px;
   font-weight: 500;
-  color: #FF5722; /* 商品价格橙色 */
-  margin-top: 0; /* 紧贴商品名称 */
+  color: #000000; /* Nike风格黑色 */
+  margin: 4px 0 8px 0;
+}
+
+/* 货币类型标签 */
+.currency-type {
+  font-size: 13px;
+  color: #6e6e73; /* Apple风格次要文字颜色 */
+  background-color: #f5f5f7;
+  border-radius: 20px;
+  padding: 6px 14px;
+  display: inline-block;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+/* 数量选择器 */
+.item-card :deep(.el-input-number) {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.item-card :deep(.el-input-number .el-input__inner) {
+  font-size: 15px;
+  color: #1d1d1f;
+  text-align: center;
+}
+
+.item-card :deep(.el-input-number__decrease),
+.item-card :deep(.el-input-number__increase) {
+  background-color: #f5f5f7;
+  color: #1d1d1f;
+  border-color: #e5e5e5;
 }
 
 .quantity-input {
-  width: 110px;
+  width: 120px;
+  margin-bottom: 15px;
 }
 
-.currency-type {
-  font-size: 1.1rem;
-  color: #888;
-  margin-top: 5px;
-  line-height: 1.4; /* 增加行高 */
-  position: absolute; /* 设置为绝对定位 */
-  top: 10px;  /* 定位到卡片的右上角 */
-  right: 10px; /* 定位到卡片的右上角 */
-} 
-
-
-.el-button {
-  font-size: 1rem;
-  border-radius: 6px;
-  padding: 10px 20px;
-}
-
+/* 移除按钮 */
 .remove {
-
   color: white;
-  font-size: 1rem;
-  border-radius: 6px;
+  font-size: 14px;
+  border-radius: 24px;
   padding: 10px 20px;
-  position: absolute; /* 设置为绝对定位 */
-  bottom: 10px; /* 定位到卡片的右下角 */
-  right: 10px;  /* 定位到卡片的右下角 */
+  background: #000000; /* Nike风格黑色 */
+  border: none;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
+.remove:hover {
+  background: #333333;
+  transform: translateY(-2px);
+}
 
+/* 底部结算区域布局调整 */
+.foot {
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 1020px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-/* 购物车为空的样式 */
+/* 调整左侧区域 */
+.foot-left {
+  display: flex;
+  align-items: center;
+  flex: 1; /* 增加全选区域的比例 */
+}
+
+/* 调整中间区域 */
+.foot-middle {
+  display: flex;
+  flex: 1.1; /* 略微增加币值显示区域的比例 */
+  justify-content: flex-end; /* 向右对齐，紧挨着结算按钮 */
+  padding-right: 0; /* 移除与结算按钮的间距 */
+}
+
+/* 调整右侧区域 */
+.foot-right {
+  flex: 0.7; /* 减小结算按钮区域比例 */
+  display: flex;
+  justify-content: flex-end; /* 结算按钮靠右 */
+  padding-left: 0; /* 移除左侧内边距 */
+}
+
+/* 货币信息样式调整 */
+.currency-info {
+  display: flex;
+  flex-direction: row;
+  gap: 15px; /* 减小间距 */
+  align-items: center;
+  justify-content: flex-end; /* 确保内容靠右 */
+}
+
+.currency-info span {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+/* 全选选择框样式 */
+.choose {
+  font-size: 16px;
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.choose :deep(.el-checkbox__input) {
+  transform: scale(1.6);
+  margin-right: 12px;
+}
+
+.choose :deep(.el-checkbox__label) {
+  font-size: 15px;
+  letter-spacing: 0.3px;
+}
+
+/* 移除旧的总额显示样式 */
+.cart-total {
+  display: none;
+}
+
+/* 恢复结算按钮原样式并增大 */
+.checkout-button {
+  background: #000000;
+  color: #fff;
+  transition: all 0.3s;
+  font-size: 20px; /* 更大的字体 */
+  padding: 16px 45px; /* 更大的内边距 */
+  border-radius: 30px;
+  border: none;
+  font-weight: 600; /* 更粗的字体 */
+  letter-spacing: 0.7px;
+}
+
+.checkout-button:hover {
+  background: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.checkout-button[disabled] {
+  background: #a1a1a6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 空购物车样式 */
 .empty-cart {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 50px;
-  color: #666;
+  padding: 80px 40px;
+  color: #1d1d1f;
   text-align: center;
-  background-color: #ffffff; /* 调整为浅黄色背景 */
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  margin: 40px 0;
 }
 
 .empty-cart-image {
-  width: 180px;
+  width: 150px;
   height: auto;
-  margin-bottom: 30px;
-  animation: bounce 1.5s infinite;
+  margin-bottom: 40px;
+  opacity: 0.8;
+  animation: float 5s ease-in-out infinite;
 }
 
 .empty-cart-text {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #FF5722; /* 调整为橙色 */
-  margin-bottom: 25px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 30px;
+  letter-spacing: 0.5px;
 }
 
 .empty-cart-button {
-  font-size: 1.1rem;
+  font-size: 16px;
   color: #fff;
-  background-color: #81C784; /* 调整为紫色背景 */
+  background-color: #000000;
   border: none;
-  padding: 12px 24px;
-  border-radius: 10px;
+  padding: 14px 32px;
+  border-radius: 30px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  letter-spacing: 0.7px;
 }
 
 .empty-cart-button:hover {
-  background-color: #4CAF50; /* 调整为更深的紫色背景 */
+  background-color: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-.checkout-info {
-  margin-left: 15vw;
-  margin-top: 25px;
-  margin-bottom: 25px;
+/* 结算弹窗样式 */
+.checkout-dialog :deep(.el-dialog) {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
 }
 
-.checkout-total {
-  margin: 25px 0;
+.checkout-dialog :deep(.el-dialog__header) {
+  background-color: #000000;
+  color: white;
+  padding: 20px;
+  text-align: center;
 }
 
-.success {
-  background: linear-gradient(45deg, #4CAF50, #81C784); /* 调整为绿色渐变 */
-  color: #fff;
-  transition: background-position 0.5s;
+.checkout-dialog :deep(.el-dialog__title) {
+  color: white;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 0.7px;
 }
 
-.success:hover {
-  background-position: right center;
+.checkout-dialog :deep(.el-dialog__headerbtn .el-dialog__close) {
+  color: rgba(255, 255, 255, 0.9);
 }
 
-
-
-
-.checkout-button:hover {
-  background: linear-gradient(45deg, #43A047, #66BB6A); /* 鼠标悬浮时的颜色变化 */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* 悬浮阴影 */
-  transform: scale(1.02); /* 微缩放效果 */
+.checkout-dialog :deep(.el-dialog__body) {
+  padding: 30px;
 }
 
+.checkout-details {
+  padding: 10px 0;
+}
 
-/* 动画效果 */
-@keyframes bounce {
+.checkout-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 16px;
+  color: #1d1d1f;
+}
+
+.checkout-item:last-child {
+  border-bottom: none;
+  margin-top: 8px;
+  background-color: #f5f5f7;
+  border-radius: 12px;
+  padding: 18px 16px;
+}
+
+.checkout-item .price {
+  font-weight: 600;
+  color: #000000;
+  font-size: 17px;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+}
+
+.dialog-footer :deep(.el-button) {
+  border-radius: 30px;
+  padding: 12px 26px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.dialog-footer :deep(.el-button--default) {
+  border-color: #d2d2d7;
+  color: #1d1d1f;
+}
+
+.dialog-footer :deep(.el-button--primary) {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+.dialog-footer :deep(.el-button--primary:hover) {
+  background-color: #333333;
+  border-color: #333333;
+}
+
+/* 优雅的动画效果 */
+@keyframes float {
   0%, 100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-15px);
   }
+}
+
+/* 确保复选框可点击 */
+.item-card :deep(.el-checkbox),
+.choose :deep(.el-checkbox) {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.item-card :deep(.el-checkbox__input),
+.choose :deep(.el-checkbox__input) {
+  z-index: 2;
+  pointer-events: auto;
 }
 </style>

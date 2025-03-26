@@ -524,14 +524,16 @@ onMounted(() => {
 .form-container {
   background-color: #fff; /* 白色背景 */
   color: #333; /* 深色文本 */
-  width: 45vw;
+  /* width: 45vw; */
+  width:100%;
+  height:100%;
   padding: 0px 0px;
 }
 /* 标题样式 */
 h2 {
   text-align: center;
   font-size: 2.1vw;
-  margin-bottom: 40px;
+  margin-bottom: 6vh;
   color: #2d4059; /* 标题使用蓝色 */
   font-weight: 600;
 }
@@ -540,8 +542,8 @@ h2 {
 .form-item {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding: 12px;
+  margin-bottom: 3.2vh;
+  padding: 0.7vw;
   border-bottom: 1px solid #e0e0e0; /* 细的分割线 */
 }
 
@@ -562,25 +564,26 @@ h2 {
 }
 
 .field label {
-  font-size: 16px;
+  font-size: 1.1vw;
   font-weight: 500;
   color: #555; /* 深灰色文本 */
-  width: 100px; /* 固定宽度 */
-  white-space: nowrap; /* 防止换行 */
+  width: 7vw; /* 固定宽度 */
+  white-space: nowrap;/* 防止换行*/
 }
 
 .field span {
-  font-size: 16px;
+  font-size: 1.1vw;
   color: #333; /* 数据值颜色 */
   flex: 1; /* 自适应剩余空间 */
   text-align: left;
-  padding-left: 10px; /* 左侧间距 */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* 加载中的提示 */
 .loading {
   text-align: center;
-  font-size: 18px;
+  font-size: 1.34vw;
   color: #999;
 }
 

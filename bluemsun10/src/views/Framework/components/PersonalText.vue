@@ -1,14 +1,14 @@
 <template>
-  <div class="tab-container">
+  <div class="tab-contain">
     <el-tabs v-model="activeTab" class="custom-tabs" type="card">
       <el-tab-pane v-if="role === '资助对象'" label="基本信息" name="tab1">
-        <div class="tab-content">
+        <div class="text-content">
           <information-form></information-form>
         </div>
       </el-tab-pane>
       
       <el-tab-pane label="修改密码" name="tab2">
-        <div class="tab-content">
+        <div class="text-content">
           <password-form></password-form>
         </div>
       </el-tab-pane>
@@ -35,11 +35,13 @@ const activeTab = ref(role === '资助对象' ? 'tab1' : 'tab2')
 
 <style scoped>
 /* Tab 整体容器 */
-.tab-container {
+.tab-contain {
   max-width: 51vw;
   margin: 0vw 1.5vw;
   padding: 1.6vw;
   background-color: white;
+  /* background-color:red; */
+  z-index: 100;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
@@ -77,11 +79,12 @@ const activeTab = ref(role === '资助对象' ? 'tab1' : 'tab2')
 }
 
 /* Tab 内容区样式 */
-.tab-content {
+.text-content {
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  /* box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); */
   margin-top: 2vh;
   height: 68vh;
   width: 45vw;
+
 }
 </style>

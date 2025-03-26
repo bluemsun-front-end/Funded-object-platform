@@ -2,7 +2,7 @@
   <div class="password-form-container">
     <div class="form-title">修改密码</div>
 <!-- 1 -->
-    <el-form :model="form" :rules="rules" ref="formRef" label-width="120px" class="password-form">
+    <el-form :model="form" :rules="rules" ref="formRef" label-width="10vw" class="password-form">
       <el-form-item label="旧密码" prop="oldPassword">
         <template #label>
           <span class="required-label">旧密码</span>
@@ -168,33 +168,38 @@ const handleClose = () => {
 
 <style scoped>
 .password-form-container {
-  width: 500px;
-  padding: 30px;
+  width: 100%;
+  padding-top: 4.5vh;
   margin: 0px auto;
 }
 
 .form-title {
-  font-size: 28px;
+  font-size: 2.1vw;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 4vh;
   color: #2d4059;
 }
 
 .password-form {
-  background-color: transparent;
-  padding: 20px 30px;
+  background-color: white;
+  padding: 3vh 0vw;
+  padding-right: 5vw;
 }
 
 .el-form-item {
-  margin-bottom: 25px;
+  margin-bottom: 4vh;
+ 
 }
-
+.required-label{
+  line-height:5.5vh;
+  font-size: 2vh;
+}
 .el-input {
   width: 100%;
-  height: 45px;
-  font-size: 16px;
-  border-radius: 8px;
+  height: 5.5vh;
+  font-size: 2vh;
+  border-radius: 20%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -204,9 +209,9 @@ const handleClose = () => {
 }
 
 .el-button {
-  width: 30%;
-  height: 40px;
-  font-size: 16px;
+  width: 4vw;
+  height: 2.3vw;
+  font-size: 1vw;
   font-weight: 700;
   border-radius: 8px;
   margin-right: 4%;
@@ -234,11 +239,15 @@ const handleClose = () => {
 
 .el-form-item .el-input__inner {
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 1.1vw;
 }
 
 .el-form-item.is-error .el-input__inner {
   border-color: #f56c6c;
+}
+
+:deep(.el-form-item__error){
+  font-size: 0.85vw;
 }
 
 .el-form-item label {
@@ -248,11 +257,12 @@ const handleClose = () => {
 .button-group {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 1.6vh;
+  width:55%;
 }
 
 :deep(.el-icon) {
   cursor: pointer;
-  font-size: 20px;
+  font-size: 1.3vw;
 }
 </style>

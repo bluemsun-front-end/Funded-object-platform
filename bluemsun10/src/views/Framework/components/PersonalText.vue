@@ -44,6 +44,7 @@ const activeTab = ref(role === '资助对象' ? 'tab1' : 'tab2')
   z-index: 100;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  height:80vh;
 }
 
 /* 自定义 Tab 栏样式 */

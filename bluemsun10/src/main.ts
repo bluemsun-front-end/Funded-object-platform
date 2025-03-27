@@ -9,6 +9,7 @@ import App from './App.vue';
 import '../icon/iconfont/iconfont.css';
 import clearLocalStorageMixin from './mixins/clearLocalStorage';
 import 'amfe-flexible'
+import './assets/iconfont/iconfont.css'
 // main.ts
 
 // 如果您正在使用CDN引入，请删除下面一行。

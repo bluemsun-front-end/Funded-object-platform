@@ -68,7 +68,7 @@ export const useCartStore = defineStore('cartStore', () => {
             const response = await Axios.delete(`http://106.54.24.243:8080/market/cart/${removeItem.ids.join(',')}`);
         
     
-            if (response.data.code == '200') {
+            if (response.data.code == 200) {
                 cartItems.value = cartItems.value.filter((item: { goodsId: any; }) => item.goodsId !== itemId);
                 filteredItems.value = filteredItems.value.filter((item: { goodsId: any; }) => item.goodsId !== itemId);
                 ElMessage.success('选中商品删除成功');
@@ -118,7 +118,7 @@ export const useCartStore = defineStore('cartStore', () => {
             const response = await Axios.post('http://106.54.24.243:8080/market/cart/settle', payload);
             console.log('结算response', response); 
             console.log('response.data.code', response.data.code);
-            if (response.data.code == '200' && userBalance.value.clothingBalance >= clothingTotal.value && userBalance.value.generalBalance >= dailyTotal.value) {
+            if (response.data.code == 200 && userBalance.value.clothingBalance >= clothingTotal.value && userBalance.value.generalBalance >= dailyTotal.value) {
                 // 结算成功的处理逻辑
                 userBalance.value.clothingBalance -= clothingTotal.value;
                 userBalance.value.generalBalance -= dailyTotal.value;
@@ -130,7 +130,7 @@ export const useCartStore = defineStore('cartStore', () => {
                 getItem();
     
                 isAllSelected.value = false; // 取消全选状态
-            } else if (response.data.code == '500') {  
+            } else if (response.data.code == 500) {  
                 const warning = response.data.msg;
                 ElMessage.warning(warning);
             } else if (userBalance.value.clothingBalance < clothingTotal.value || userBalance.value.generalBalance < dailyTotal.value) {
@@ -180,7 +180,7 @@ const updateItemQuantity = async (itemId: number, newQuantity: number) => {
         // 调用后端接口更新数量
         const response = await Axios.put('http://106.54.24.243:8080/market/cart', payload);
 
-        if (response.data.code === '200') {
+        if (response.data.code === 200) {
             // 更新本地数据
             item.num = newQuantity;
             ElMessage.success('商品数量已更新');

@@ -200,7 +200,10 @@
                       <div class="change">
                           <!-- 婚姻状况下拉框 -->
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="婚姻状况：" >
+                            <el-form-item style="font-size: 20px;"  >
+                              <div class="label-container">
+                                <span>婚姻状况：</span>
+                              </div>
                               <el-select v-model="editInfo.marry" placeholder="婚姻状况" style="width: 150px;">
                               <el-option
                                   v-for="item in marryOptions"
@@ -213,23 +216,39 @@
                           </div>
                           <!-- 公寓 -->
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="公&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;寓：" >
+                            <el-form-item style="font-size: 20px;" >
+                              <div class="label-container">
+                                <span>公</span>
+                                <span>寓：</span>
+                              </div>
                               <el-input v-model="editInfo.apartment" style="width: 150px" placeholder="公寓" />
                             </el-form-item>
                           </div>
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="宿&nbsp;&nbsp;舍&nbsp;&nbsp;号：" >
+                            <el-form-item style="font-size: 20px;" >
+                              <div class="label-container">
+                                <span>宿</span>
+                                <span>舍</span>
+                                <span>号：</span>
+                              </div>
                               <el-input v-model="editInfo.dormitory" style="width: 150px" placeholder="宿舍号" />
                             </el-form-item>
                           </div>
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="家庭住址：" >
+                            <el-form-item style="font-size: 20px;" >
+                              <div class="label-container">
+                                <span>家庭住址：</span>
+                              </div>
                             <el-input v-model="editInfo.homeAddress" style="width: 150px" placeholder="家庭住址" />
                             </el-form-item>
                           </div>
                         
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="专&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：" >
+                            <el-form-item style="font-size: 20px;"  >
+                              <div class="label-container">
+                                <span>专</span>
+                                <span>业：</span>
+                              </div>
                               <el-select v-model="editInfo.major" placeholder="专业" class="select-width" style="width: 150px;" disabled>
                                   <el-option
                                   v-for="item in majorOptions"
@@ -241,7 +260,11 @@
                               </el-form-item>
                           </div>
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;历：" >
+                            <el-form-item style="font-size: 20px;"  >
+                              <div class="label-container">
+                                <span>学</span>
+                                <span>历：</span>
+                              </div>
                               <el-select v-model="editInfo.degree" placeholder="学历" class="select-width" style="width: 150px;" disabled>
                                   <el-option
                                   v-for="item in degreeOptions"
@@ -255,7 +278,11 @@
 
                           <!-- 添加生日选择框 -->
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日：" >
+                            <el-form-item style="font-size: 20px;"  >
+                              <div class="label-container">
+                                <span>生</span>
+                                <span>日：</span>
+                              </div>
                               <el-date-picker
                                   v-model="editInfo.birthday"
                                   type="date"
@@ -267,7 +294,10 @@
                             </el-form-item>
                           </div>
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="政治面貌：" >
+                            <el-form-item style="font-size: 20px;" >
+                              <div class="label-container">
+                                <span>政治面貌：</span>
+                              </div>
                               <el-select v-model="editInfo.political" placeholder="政治面貌" style="width: 150px" disabled>
                                   <el-option
                                       v-for="item in politicalOptions"
@@ -279,7 +309,11 @@
                             </el-form-item>
                           </div>
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;院：" >
+                            <el-form-item style="font-size: 20px;"  >
+                              <div class="label-container">
+                                <span>学</span>
+                                <span>院：</span>
+                              </div>
                               <el-select v-model="editInfo.college" placeholder="学院" style="width: 150px" disabled>
                                   <el-option
                                       v-for="item in collegeOptions"
@@ -291,7 +325,11 @@
                             </el-form-item>
                           </div>
                           <div class="changeInfor">
-                            <el-form-item style="font-size: 20px;" label="状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：" >
+                            <el-form-item style="font-size: 20px;" >
+                              <div class="label-container">
+                                <span>状</span>
+                                <span>态：</span>
+                              </div>
                               <el-select v-model="editInfo.status" placeholder="状态" style="width: 150px;" disabled>
                                   <el-option
                                   v-for="item in statusOptions"
@@ -306,18 +344,31 @@
                         <!-- 手机号输入框 -->
                         <el-form :model="editInfo" :rules="rules" ref="editForm">
                           <div class="changeInfor">
-                            <el-form-item label="手&nbsp;&nbsp;机&nbsp;&nbsp;号：" prop="telephone">
-                              <template #label>
+                            <el-form-item  prop="telephone">
+                              <div class="label-container">
+                                  <span style="color:red">*</span>
+                                  <span>手</span>
+                                  <span>机</span>
+                                  <span>号：</span>
+                              </div>
+                              <!-- <template #label class="label-container">
                                 <span style="font-size: 20px;">手&nbsp;机&nbsp;号&nbsp;:&nbsp;</span>
-                              </template>
+                                
+                              </template> -->
+                            
                               <el-input v-model="editInfo.telephone" style="width: 150px" placeholder="手机号" />
                             </el-form-item>
                           </div>
                           <div class="changeInfor">
-                            <el-form-item label="E&nbsp;&nbsp;-&nbsp;&nbsp;mail：" prop="email">
-                              <template #label>
+                            <el-form-item  prop="email">
+                              <div class="label-container">
+                                  <span style="color:red">*</span>
+                                  <span>E-mail</span>
+                                  <span>：</span>
+                              </div>
+                              <!-- <template #label>
                                 <span style="font-size: 20px;">&nbsp;E-mail&nbsp;：</span>
-                              </template>
+                              </template> -->
                               <el-input v-model="editInfo.email" style="width: 150px" placeholder="e-mail" />
                             </el-form-item>
                           </div>
@@ -1444,7 +1495,8 @@ flex-direction: row;
 /* margin-bottom:15px; */
 }
 .changeInfor{
-width: 200px;
+/* width: 200px; */
+width: 260px;
 margin-left:30px;
 height:45px;
 }
@@ -1559,5 +1611,21 @@ element.style {
   text-align: center;
   display: flex;
   justify-content: center;
+}
+.label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px; /* 根据需要调整宽度 */
+  font-size: 20px; /* 保持与字体大小一致 */
+  color:var(--el-text-color-regular);
+}
+#label{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px; /* 根据需要调整宽度 */
+  font-size: 20px; /* 保持与字体大小一致 */
+  color:var(--el-text-color-regular);
 }
 </style>

@@ -28,7 +28,7 @@
         <el-input
           v-model="form.newPassword"
           :type="passwordTypes.newPassword"
-          placeholder="请输入新密码"
+          placeholder="长度应为5-20位"
         >
           <template #append>
             <el-icon @click="togglePasswordType('newPassword')">
@@ -46,7 +46,7 @@
         <el-input
           v-model="form.confirmPassword"
           :type="passwordTypes.confirmPassword"
-          placeholder="请再次输入新密码"
+          placeholder="长度应为5-20位"
         >
           <template #append>
             <el-icon @click="togglePasswordType('confirmPassword')">
@@ -265,4 +265,59 @@ const handleClose = () => {
   cursor: pointer;
   font-size: 1.3vw;
 }
+@media screen and (max-width: 768px) {
+  .password-form-container{
+    width:180%;
+    padding-top:0;
+  }
+  .form-title {
+    font-size: 4vw;
+    margin-bottom: 2vh;
+  }
+
+  .password-form {
+    padding: 0vw;
+  }
+
+  .el-input {
+    font-size: 4vw;
+    height: 6vh;
+  }
+
+  .el-button {
+    width: 30vw;
+    height: 6vh;
+    font-size: 4vw;
+  }
+
+  .button-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .button-group .el-button {
+    margin-bottom: 0vw;
+    width: 40%;
+  }
+
+  .required-label {
+    font-size: 3.5vw;
+  }
+
+  :deep(.el-icon) {
+    font-size: 5vw;
+  }
+
+  :deep(.el-form-item__error) {
+    font-size: 3vw;
+  }
+  :deep(.el-form-item__label){
+    font-size: 3vw;
+    /* margin-bottom: 1vw;
+    margin-top: 1vw; */
+    flex:0.3 0 auto;
+  }
+}
+
 </style>

@@ -8,7 +8,7 @@
           <el-col :span="24">
             <div class="avatar-wrapper" @mouseenter="isHover = true" @mouseleave="isHover = false" @click="triggerFileInput">
               <el-avatar 
-                :size="120"
+                :size="avatarSize"
                 :src="circleUrl" 
                 class="avatar-image"
               />
@@ -67,10 +67,30 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { onMounted } from 'vue'
-import { reactive, toRefs,computed } from 'vue'
+import { reactive, toRefs,computed,watch } from 'vue'
 import { ElMessage } from 'element-plus'
 // import { defineEmits } from 'vue'
 // const emit = defineEmits(['role'])
+const avatarSize = ref(100);
+
+const handleResize = () => {
+  const width = window.innerWidth;
+  if (width < 768) {
+    avatarSize.value = 50;
+  } else if (width < 1200) {
+    avatarSize.value = 100;
+  } else {
+    avatarSize.value = 140;
+  }
+};
+
+onMounted(() => {
+  handleResize();
+  window.addEventListener('resize', handleResize);
+});
+
+watch(() => window.innerWidth, handleResize);
+
 const state = reactive({
   circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
   isHover: false
@@ -225,6 +245,7 @@ const triggerFileInput = () => {
   width: 20vw;
   padding: 2.3vw;
   border-radius: 20px;
+  margin-left:2vw;
   background-color: #fff;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -337,5 +358,36 @@ strong {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+@media (max-width: 768px) {
 
+  .profile-box {
+    width: 95%;
+    margin-left:0vw;
+    margin-bottom:2vw;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* 无圆角和阴影 */
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+  }
+  .profile-box:hover {
+     transform: none;
+     box-shadow:none;
+  }
+  .name {
+    font-size: 3.5vw;
+    margin-bottom: 1.1vh;
+  }
+
+  .info-item {
+    font-size: 3vw;
+  }
+
+  .info-item i {
+    font-size: 3vw;
+  }
+}
 </style>

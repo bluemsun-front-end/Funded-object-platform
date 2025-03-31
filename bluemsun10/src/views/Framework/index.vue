@@ -1,8 +1,17 @@
 <template>
 <div>
     <el-container class="layout-container-demo" style="height: 100vh">
-    <!-- 左侧边栏 -->
-    <el-aside width="16vw" class="sidebar">
+     <!-- 侧边栏显示/隐藏按钮 -->
+      <el-button class="menu-toggle" @click="toggleSidebar" v-if="isMobile">
+        <el-icon v-if="sidebarVisible">
+          <ArrowLeft />
+        </el-icon>
+        <el-icon v-else>
+          <ArrowRight />
+        </el-icon>
+      </el-button>
+      <!-- 左侧边栏 -->
+    <el-aside v-if="sidebarVisible || !isMobile" :width="isMobile ? '60vw' : '16vw'" class="sidebar">
       <el-scrollbar style="height: 100%">
         <el-menu :default-active="activeMenu" :default-openeds="['1']" class="sidebar-menu">
           <!-- 侧边栏标题 -->
@@ -77,18 +86,17 @@
       <!-- 主内容区 -->
       <el-main>
         <div v-if="currentPage === 'personalCenter'" class="content">
-          <!-- 监听子组件发出的 'role' 事件 -->
-          <!-- <personal-box @role="updateRole"></personal-box>
-          <personal-text :message="roleMessage"></personal-text> -->
-          <personal-box></personal-box>
-          <personal-text></personal-text>
+          <div class="personal-container">
+              <personal-box></personal-box>
+              <personal-text></personal-text>
+            </div>
         </div>
       </el-main>
     </el-container>
   </el-container>
 
   <!-- 退出登录确认模态框 -->
-  <el-dialog v-model="outerVisible" title="" width="450px" :before-close="handleBeforeClose">
+  <el-dialog v-model="outerVisible" title="" :before-close="handleBeforeClose">
     <div class="dialog-content">
       <span>确认退出登录吗？</span>
     </div>
@@ -104,10 +112,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref ,onMounted, computed} from 'vue'
 import { ElMessage } from 'element-plus' // 导入 ElMessage 组件
 import axios from 'axios' // 导入 axios 库
-import { useRouter } from 'vue-router'
+import { useRouter} from 'vue-router'
 import PersonalBox from '@/views/Framework/components/PersonalBox.vue' // 导入 PersonalBox 组件
 import PersonalText from '@/views/Framework/components/PersonalText.vue'
 import Axios from '@/views/Axios'
@@ -115,37 +123,37 @@ const roleMessage = ref('资助对象')
 const router = useRouter()
 const token = localStorage.getItem('token')
 const role = localStorage.getItem('role')
-
-// 模态框
+const sidebarVisible = ref(true);
+const isMobile = ref(window.innerWidth <= 768);
 const outerVisible = ref(false)
-// 当前选中的菜单项
-const activeMenu = ref('1') // 默认选中 "个人中心"
-const currentPage = ref('personalCenter') // 默认显示 个人中心
+const activeMenu = ref('1')
+const currentPage = ref('personalCenter') 
 
+// 侧边栏
+const toggleSidebar = () => {
+  sidebarVisible.value = !sidebarVisible.value;
+};
 
-// 当前用户角色
-
-// 监听子组件传递的角色信息
+onMounted(() => {
+  window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth <= 768;
+  });
+});
 
 // // 点击菜单项时的处理函数
 const handleMenuClick = (page: string) => {
   if (page === 'superMarket') {
     router.push('/home')
-    // window.location.href = `http://localhost:5174/home?token=${token}&role=${role}`
   } else if (page === 'personalProfile') {
     router.push('/new-file')
-    // window.location.href = `http://localhost:5175/new-file?token=${token}&role=${role}`
   } else if (page === 'studentsProfile')
     router.push('/studentFiles')
-    // window.location.href = `http://localhost:5175/studentFiles?token=${token}&role=${role}`
   else if (page === 'superMarketManage')
     router.push('/manage')
-    // window.location.href = `http://localhost:5174/manage?token=${token}&role=${role}`
 }
 
-// 模态框关闭时执行的回调
 const handleBeforeClose = (done: Function) => {
-  done() // 关闭模态框
+  done()
 }
 
 // 退出登录处理函数
@@ -172,6 +180,10 @@ const handleLogout = async () => {
     ElMessage.error('请求失败！')
   }
 }
+// 登录状态判断，否则跳转登录页
+if (!localStorage.getItem('token')) {
+  router.push('/')
+}
 // 页面关闭删除token
 import { onBeforeUnmount } from 'vue'
 // onBeforeUnmount(() => {
@@ -185,38 +197,38 @@ import { onBeforeUnmount } from 'vue'
 <style scoped>
 .content {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
-/* 顶部导航栏 */
+
 .layout-container-demo .el-header {
   background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   color: #333;
 }
-.header{
+.header {
   height: 8vh;
 }
+
 .title {
   color: #2d4059;
   font-family: 'Arial', sans-serif;
-  font-size: 2.2vw;
+  font-size: 2vw;
   font-weight: bold;
-  /* margin-top: 10px;
-  margin-bottom: 10px; */
   margin: 1.3vh auto;
   text-align: center;
-  align-content: center;
   letter-spacing: 0.1em;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 左侧边栏 - 深色背景 */
 .layout-container-demo .el-aside {
-  background-color: #283142; /* 深蓝色背景 */
+  background-color: #283142;
   position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
-  color: #ecf0f1; /* 浅色字体 */
+  color: #ecf0f1;
 }
 
 /* 侧边栏标题样式 */
@@ -224,10 +236,10 @@ import { onBeforeUnmount } from 'vue'
   background-color: #1f2739;
   text-align: center;
   font-weight: bold;
-  height:8vh;
+  height: 8vh;
   line-height: 8vh;
   font-size: 1.3vw;
-  color: #ecf0f1; /* 浅色字体 */
+  color: #ecf0f1;
 }
 
 /* 侧边栏菜单项 */
@@ -236,14 +248,11 @@ import { onBeforeUnmount } from 'vue'
   font-size: 1.1vw;
   color: #bdc3c7;
   padding-left: 1vw;
-  background-color: #283142; /* 默认背景透明，与侧边栏背景一致 */
+  background-color: #283142;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-:deep(.el-menu) {
-  border: 0;
-}
 
-/* 鼠标悬停时的菜单项颜色变化 */
+/* 侧边栏菜单项 hover */
 .menu-item:hover {
   background-color: #3498db;
   color: white;
@@ -256,68 +265,56 @@ import { onBeforeUnmount } from 'vue'
   color: white;
 }
 
-/* 退出登录按钮 */
 .logout-button {
-  margin-top: auto; /* 使退出登录按钮靠下 */
+  margin-top: auto;
   font-size: 1.1vw;
-  color: #e74c3c; /* 红色字体 */
+  color: #e74c3c;
   padding-left: 2vw;
-  background-color: #283142; /* 透明背景，与侧边栏背景一致**/
+  background-color: #283142;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 退出登录按钮悬停效果 */
 .logout-button:hover {
-  background-color: #f7d7d7; /* 红色悬停效果 */
-  color: #e74c3c; /* 保持红色 */
+  background-color: #f7d7d7;
+  color: #e74c3c;
   cursor: pointer;
 }
 
-/* 主内容区域 */
 .layout-container-demo .el-main {
   padding: 1.5vw;
-  background-color: #f4f4f4; /* 浅灰色背景 */
-}
-/* 工具栏 */
-.layout-container-demo .toolbar {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  height: 100%;
+  background-color: #f4f4f4;
 }
 
-/* 调整侧边栏和菜单项的高度 */
-.layout-container-demo .el-menu-item,
-.layout-container-demo .el-sub-menu {
-  height: 8vh;
-  line-height: 8vh;
-}
-.el-menu-item{
+.el-menu-item {
   padding: 2vw 4vh;
 }
-/* 模态框样式 */
+
+/* 模态框 */
 .el-dialog {
-  border-radius: 1vw; /* 圆角 */
-  background-color: #f9f9f9; /* 浅灰色背景 */
+  border-radius: 1vw;
+  background-color: #f9f9f9;
 }
 
 .el-dialog__header {
-  background-color: #3498db; /* 蓝色背景 */
-  color: #fff; /* 白色文字 */
-  font-size: 1.4vw; /* 标题字体大小 */
+  background-color: #3498db;
+  color: #fff;
+  font-size: 1.4vw;
   font-weight: bold;
 }
 
 .el-dialog__body {
   font-size: 1.28vw;
   color: #333;
-  text-align: center; /* 内容居中 */
+  text-align: center;
 }
 
 .el-dialog__footer {
   display: flex;
   justify-content: space-between;
   padding: 0.8vw 3.2vh;
+}
+.el-dialog__width{
+  width:450px;
 }
 
 .dialog-footer {
@@ -327,39 +324,110 @@ import { onBeforeUnmount } from 'vue'
 }
 
 .cancel-btn {
-  background-color: #e1e1e1; /* 灰色取消按钮 */
+  background-color: #e1e1e1;
   color: #333;
   border-radius: 4px;
   transition: background-color 0.3s ease;
 }
 
 .cancel-btn:hover {
-  background-color: #bdc3c7; /* 悬停时变为浅灰色 */
+  background-color: #bdc3c7;
 }
 
 .confirm-btn {
-  background-color: #3498db; /* 蓝色确认按钮 */
+  background-color: #3498db;
   color: white;
   border-radius: 4px;
   transition: background-color 0.3s ease;
 }
 
 .confirm-btn:hover {
-  background-color: #2980b9; /* 悬停时背景色变深 */
-}
-/* 模态框内容居中 */
-.el-dialog__body {
-  text-align: center; /* 使内容居中 */
-  font-size: 1.28vw;
-  color: #333;
+  background-color: #2980b9;
 }
 
-.dialog-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  font-size: 1.28vw;
-  color: #333;
+.menu-toggle {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background: #3498db;
+  color: white;
+  padding: 10px;
 }
+
+.personal-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .content{
+    display:block;
+  }
+  .personal-container {
+    flex-direction: column;
+    padding: 0; 
+    gap:0px;
+  }
+
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50vw; /* 增加边栏宽度，使其适应移动端 */
+    background: #283142;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-title {
+    font-size: 5vw;
+    height: auto;
+    padding: 0vw;
+  }
+
+  .menu-item {
+    font-size: 4vw; /* 增加字体大小，适应小屏幕 */
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+
+  .logout-button {
+    font-size: 4vw;
+    padding-left: 5vw;
+  }
+
+  .el-header {
+    height: auto;
+    padding: 3vw;
+  }
+
+  .title {
+    font-size: 6vw; /* 适配移动端 */
+    margin: 0;
+  }
+
+  .el-dialog__header {
+    font-size: 5vw; /* 对话框标题字体大小调整 */
+  }
+
+  .el-dialog__body {
+    font-size: 5vw; /* 调整对话框内容字体大小 */
+  }
+
+  .el-dialog__footer {
+    font-size: 4vw;
+    padding: 20vw;
+  }
+  .menu-toggle {
+  top: 0.5vw;
+  left: 0.5vw;
+  z-index: 1000;
+  background: #3498db;
+  color: white;
+  padding: 1vw;
+}
+}
+
 </style>

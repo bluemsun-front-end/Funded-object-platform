@@ -574,7 +574,7 @@ h2 {
 .field span {
   font-size: 1.1vw;
   color: #333; /* 数据值颜色 */
-  flex: 1; /* 自适应剩余空间 */
+  flex: 1; 
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -588,30 +588,29 @@ h2 {
 }
 
 /* 响应式：调整小屏幕下的显示方式 */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .form-container {
-    padding: 20px;
+    padding: 10px;
+    width:180%;
   }
 
-  .form-item {
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 15px;
+  h2 {
+    font-size: 4vw; /* 调整小屏幕下的标题字体 */
+    margin-bottom: 2vh;
   }
 
-  .field {
-    width: 100%;
-    margin-right: 0; /* 移除右侧间距 */
-    margin-bottom: 10px; /* 添加底部间距 */
-  }
 
   .field label {
-    margin-bottom: 5px;
+    font-size: 3.2vw; /* 字体适配小屏 */
+    line-height: 4vw;
   }
 
   .field span {
-    width: 100%;
+    width: 50%;
+    font-size: 3.2vw; /* 字体适配小屏 */
+    line-height: 4vw;
     text-align: left;
+    margin-left:8vw;
   }
 }
 </style>

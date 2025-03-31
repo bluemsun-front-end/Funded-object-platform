@@ -4,9 +4,10 @@
       <div class="background1">
           <el-tabs tabPosition="top" type="border-card" style="height: 90vh;border:none" class="demo-tabs">
               <el-tab-pane  label="个人信息" class="tab-content">
+                <el-scrollbar height="70vh">
                   <el-descriptions size='large' class="margin-top"  :column="3"  border>
                       <template #extra>
-                      <el-button type="primary" @click="showEditDialog = true">编辑个人信息</el-button>
+                        <el-button type="primary" @click="showEditDialog = true">编辑个人信息</el-button>
                       </template>
                       <el-descriptions-item>
                           <template #label>
@@ -379,9 +380,10 @@
                   
                   </div>
                   </div>
+                </el-scrollbar>
               </el-tab-pane>
               <el-tab-pane label="个人处分" class="biaoge,tab-content">
-                <el-table :data="fundPunishVo" style="width: 100%;height:90%" row-height="60">
+                <el-table :data="fundPunishVo" style="width: 100%;height:92%" row-height="60">
                   <el-table-column prop="category" label="处罚类型"  flex="1"/>
                   <el-table-column prop="punishTime" label="处罚时间" flex="1" sortable/>
                   <el-table-column prop="reason" label="处罚原因"  flex="3" />
@@ -404,10 +406,10 @@
               </el-tab-pane>
 
               <el-tab-pane label="个人奖励" class="biaoge,tab-content">
-                <el-table :data="fundScholarshipVo" style="width: 100%;" row-height="60">
-                  <el-table-column prop="type" label="奖励类型" flex="1" />
-                  <el-table-column prop="grantDate" label="授予时间" flex="1" sortable />
-                  <el-table-column prop="amount" label="奖励金额" flex="3"/>
+                <el-table :data="fundScholarshipVo" style="width: 100%;" row-height="60" layout="auto">
+                  <el-table-column prop="type" label="奖励类型" />
+                  <el-table-column prop="grantDate" label="授予时间"  sortable />
+                  <el-table-column prop="amount" label="奖励金额"/>
                   <template #empty>
                     <div style="width:100%;height:100%" class="flex items-center justify-center h-100%">
                       <el-empty />
@@ -426,7 +428,7 @@
                 />
               </el-tab-pane>
               <el-tab-pane label="社会经历" class="tab-content">
-                <el-table :data="socialExperienceData"  style="width: 100%;">
+                <el-table :data="socialExperienceData"  style="width: 100%;height:92%" layout="auto">
                     <el-table-column prop="startDate" label="开始时间" flex="1" sortable />
                     <el-table-column prop="endDate" label="结束时间" flex="1" sortable />
                     <el-table-column prop="experience" label="社会经历" flex="3"/>
@@ -1367,7 +1369,7 @@ default:
   height:94%;
   margin-left:2vw;
   margin-right:2vw;
-  /* overflow: auto; */
+  overflow: auto;
   /* background-color:#fafafa; */
 }
 .el-descriptions {

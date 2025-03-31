@@ -201,7 +201,7 @@
                           <!-- 婚姻状况下拉框 -->
                           <div class="changeInfor">
                             <el-form-item style="font-size: 20px;" label="婚姻状况：" >
-                              <el-select v-model="editInfo.marry" placeholder="婚姻状况" style="width: 150px;" disabled>
+                              <el-select v-model="editInfo.marry" placeholder="婚姻状况" style="width: 150px;">
                               <el-option
                                   v-for="item in marryOptions"
                                   :key="item.value"
@@ -224,10 +224,10 @@
                           </div>
                           <div class="changeInfor">
                             <el-form-item style="font-size: 20px;" label="家庭住址：" >
-                             <el-input v-model="editInfo.homeAddress" style="width: 150px" placeholder="家庭住址" />
+                            <el-input v-model="editInfo.homeAddress" style="width: 150px" placeholder="家庭住址" />
                             </el-form-item>
                           </div>
-                         
+                        
                           <div class="changeInfor">
                             <el-form-item style="font-size: 20px;" label="专&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：" >
                               <el-select v-model="editInfo.major" placeholder="专业" class="select-width" style="width: 150px;" disabled>
@@ -330,7 +330,7 @@
                   </div>
               </el-tab-pane>
               <el-tab-pane label="个人处分" class="biaoge,tab-content">
-                <el-table :data="fundPunishVo" height="700" style="width: 100%;" row-height="60">
+                <el-table :data="fundPunishVo" style="width: 100%;height:90%" row-height="60">
                   <el-table-column prop="category" label="处罚类型"  width="300"/>
                   <el-table-column prop="punishTime" label="处罚时间" width="300" sortable/>
                   <el-table-column prop="reason" label="处罚原因"   />
@@ -340,10 +340,20 @@
                     </div>
                   </template>
                 </el-table>
+                <el-pagination
+                  background
+                  layout="prev, pager, next"
+                  :total="totalNum2"
+                  :page-size="8"
+                  v-model:currentPage="currentPage2"
+                  pager-count="50"
+                  @current-change="handlePageChange"
+                  id="pagenation"
+                />
               </el-tab-pane>
 
               <el-tab-pane label="个人奖励" class="biaoge,tab-content">
-                <el-table :data="fundScholarshipVo" height="700" style="width: 100%;" row-height="60">
+                <el-table :data="fundScholarshipVo" style="width: 100%;height:90%" row-height="60">
                   <el-table-column prop="type" label="奖励类型" width="300" />
                   <el-table-column prop="grantDate" label="授予时间" width="300" sortable />
                   <el-table-column prop="amount" label="奖励金额" />
@@ -353,61 +363,33 @@
                     </div>
                   </template>
                 </el-table>
+                <el-pagination
+                  background
+                  layout="prev, pager, next"
+                  :total="totalNum2"
+                  :page-size="8"
+                  v-model:currentPage="currentPage2"
+                  pager-count="50"
+                  @current-change="handlePageChange"
+                  id="pagenation"
+                />
               </el-tab-pane>
               <el-tab-pane label="社会经历" class="tab-content">
-                <div v-if="showAddExperienceDialog" class="overlay">
-                  <div class="edit-dialog add-dialog">
-                    <div class="dialog-content">
-                      <div class="biaoti">
-                        <p id="dialog-title">添加社会经历</p>
-                        <span class="close" @click="showAddExperienceDialog = false">&times;</span>
-                      </div>
-                      <div class="change2">
-                        <div class="changeInfor2">
-                          <el-text class="mx-1">开始日期：</el-text>
-                          <el-date-picker
-                            v-model="newExperience.startDate"
-                            type="date"
-                            placeholder="选择日期"
-                            value-format="YYYY-MM-DD"
-                            style="width: 150px;"
-                          ></el-date-picker>
-                        </div>
-                        <div class="changeInfor2">
-                          <el-text class="mx-1">结束日期：</el-text>
-                          <el-date-picker
-                            v-model="newExperience.endDate"
-                            type="date"
-                            placeholder="选择日期"
-                            value-format="YYYY-MM-DD"
-                            :size="size"
-                            style="width: 150px;"
-                          />
-                        </div>
-                        <div class="changeInfor2">
-                          <el-text class="mx-1">经历描述：</el-text>
-                          <br>
-                          <el-input
-                            v-model="newExperience.experience"
-                            style="resize:none;margin-top:10px;width: 550px"
-                            :rows="2"
-                            type="textarea"
-                            placeholder="Please input"
-                            resize="none"
-                          />
-                        </div>
-                      </div>
-                      <el-button class="btn" type="primary" plain @click="addExperience">保存</el-button>
-                      <el-button class="btn" type="primary" plain @click="showAddExperienceDialog = false">取消</el-button>
-                    </div>
-                  </div>
-                </div>
-                <el-button type="primary" @click="showAddExperienceDialog = true" class="button1">+添加经历</el-button>
-                <el-table :data="socialExperienceData" height="430px" style="width: 100%">
+                <el-table :data="socialExperienceData"  style="width: 100%;height:90%">
                     <el-table-column prop="startDate" label="开始时间" width="240" sortable />
                     <el-table-column prop="endDate" label="结束时间" width="240" sortable />
                     <el-table-column prop="experience" label="社会经历" />
-               </el-table>
+                </el-table>
+                <el-pagination
+                  background
+                  layout="prev, pager, next"
+                  :total="totalNum"
+                  :page-size="8"
+                  v-model:currentPage="currentPage"
+                  pager-count="50"
+                  @current-change="handlePageChange"
+                  id="pagenation"
+                />
               </el-tab-pane>
             </el-tabs>
       </div>
@@ -423,6 +405,10 @@ import {Iphone,Location,OfficeBuilding,Tickets,User,} from '@element-plus/icons-
 import type { ComponentSize } from 'element-plus'
 import { h } from 'vue'
 import { ElMessage, ElMessageBox ,ElDialog} from 'element-plus'
+const currentPage = ref(1);
+const totalNum = ref(0); // 存储商品总数的响应式变量
+const currentPage2= ref(1);
+const totalNum2 = ref(0); // 存储商品总数的响应式变量
   const size = ref<ComponentSize>('default')
   const iconStyle = computed(() => {
   const marginMap = {
@@ -434,7 +420,11 @@ import { ElMessage, ElMessageBox ,ElDialog} from 'element-plus'
       marginRight: marginMap[size.value] || marginMap.default,
   }
   })
-
+// 页码改变时重新加载商品
+const handlePageChange = (newPage) => {
+  currentPage.value = newPage;
+  loadProducts(newPage);
+};
   const rules = reactive({
     telephone: [
   { required: true, message: '手机号不能为空', trigger: 'blur' },
@@ -732,30 +722,30 @@ const saveEditInfo = async () => {
   ]);
 //奖学金
 const formatFundType = (fundType: string): string => {
- switch (fundType) {
-   case '0':
-     return '国家奖学金';
-   case '1':
-     return '国家励志奖学金';
-   case '2':
-     return '学校励志奖学金';
-   case '3':
-     return '励志学子';
-   case '4':
-     return '宝钢奖学金';
-   case '5':
-     return '小米奖学金';
-   case '6':
-     return '小米特等奖';
-   case '7':
-     return '恒兴助学奖学金';
-   case '8':
-     return '小米助学金';
-   case '9':
-     return '理想与成才';
-   default:
-     return '未知';
- }
+switch (fundType) {
+  case '0':
+    return '国家奖学金';
+  case '1':
+    return '国家励志奖学金';
+  case '2':
+    return '学校励志奖学金';
+  case '3':
+    return '励志学子';
+  case '4':
+    return '宝钢奖学金';
+  case '5':
+    return '小米奖学金';
+  case '6':
+    return '小米特等奖';
+  case '7':
+    return '恒兴助学奖学金';
+  case '8':
+    return '小米助学金';
+  case '9':
+    return '理想与成才';
+  default:
+    return '未知';
+}
 }
 // 处罚类型
 const formatPunishType = (punishType: string): string => {
@@ -1226,11 +1216,11 @@ default:
   max-height: 75vh; 
   max-width: 90vw;
   width: 84vw;
-  height:100%;
+  height:94%;
   margin-left:2vw;
   margin-right:2vw;
-  overflow: auto;
-  background-color:#fafafa;
+  /* overflow: auto; */
+  /* background-color:#fafafa; */
 }
 .el-descriptions {
     margin-top: 20px;
@@ -1282,7 +1272,7 @@ default:
   max-height: 75vh; 
   overflow: auto; 
   overflow-x: hidden;
-  background-color:#ffffff;
+  /* background-color:#ffffff; */
 }
   /* 编辑个人信息 */
   /* 编辑对话框样式 */
@@ -1470,5 +1460,19 @@ element.style {
     direction: ltr;
     height: 100%;
     width: 100%;
+}
+/* #pagenation{
+  display: fixed;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom:30px;
+  bottom:20px;
+} */
+#pagenation {
+  position: fixed;
+  /* margin-top:10px; */
+  bottom: -1vh;
+  width: 84vw;
+  text-align: center;
 }
 </style>

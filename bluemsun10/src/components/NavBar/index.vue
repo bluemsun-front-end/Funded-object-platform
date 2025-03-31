@@ -36,8 +36,9 @@
         </el-row>
         <button class="iconfont icon-menu" @click="toggleMenu"></button>
       </div>
-
-      <el-dialog v-model="centerDialogVisible" title="确认退出吗？" width="370" center align-center>
+      
+    </div>
+    <el-dialog v-model="centerDialogVisible" title="确认退出吗？" width="370" center align-center>
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="centerDialogVisible = false">取消</el-button>
@@ -47,7 +48,6 @@
           </div>
         </template>
       </el-dialog>
-    </div>
   </el-header>
 </template>
 

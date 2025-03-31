@@ -347,7 +347,7 @@
                   :page-size="8"
                   v-model:currentPage="currentPage2"
                   pager-count="50"
-                  @current-change="handlePageChange"
+                  @current-change="handlePageChange2"
                   id="pagenation"
                 />
               </el-tab-pane>
@@ -366,11 +366,11 @@
                 <el-pagination
                   background
                   layout="prev, pager, next"
-                  :total="totalNum2"
+                  :total="totalNum3"
                   :page-size="8"
-                  v-model:currentPage="currentPage2"
+                  v-model:currentPage="currentPage3"
                   pager-count="50"
-                  @current-change="handlePageChange"
+                  @current-change="handlePageChange3"
                   id="pagenation"
                 />
               </el-tab-pane>
@@ -409,6 +409,8 @@ const currentPage = ref(1);
 const totalNum = ref(0); // 存储商品总数的响应式变量
 const currentPage2= ref(1);
 const totalNum2 = ref(0); // 存储商品总数的响应式变量
+const currentPage3= ref(1);
+const totalNum3 = ref(0); // 存储商品总数的响应式变量
   const size = ref<ComponentSize>('default')
   const iconStyle = computed(() => {
   const marginMap = {
@@ -420,11 +422,6 @@ const totalNum2 = ref(0); // 存储商品总数的响应式变量
       marginRight: marginMap[size.value] || marginMap.default,
   }
   })
-// 页码改变时重新加载商品
-const handlePageChange = (newPage) => {
-  currentPage.value = newPage;
-  loadProducts(newPage);
-};
   const rules = reactive({
     telephone: [
   { required: true, message: '手机号不能为空', trigger: 'blur' },
@@ -470,7 +467,7 @@ const editInfo = reactive({
   const fetchStudentInfo = async () => {
   try {
       const response = await axios.get('http://106.54.24.243:8080/grow/userOwnInfo/list', {
-      params: {},
+        params: {},
       });
       if (response.data.code === 200) {
       studentInfo.value = response.data.data.fundUserInfoVo;
@@ -499,7 +496,7 @@ const editInfo = reactive({
       editInfo.birthday = studentInfo.value.birthday || '';
       editInfo.fundType = studentInfo.value.fundType || '';
        // 更新其他信息
-       newExperience.value = {
+      newExperience.value = {
         startDate:newExperience.value.startDate || '',
         endDate: newExperience.value.endDate || '',
         experience: newExperience.value.experience || '',
@@ -510,6 +507,98 @@ const editInfo = reactive({
   }
   };
   fetchStudentInfo();
+// 个人奖励分页
+const fetchScholarshipInfo = async () => {
+  try {
+    const response = await axios.get('http://106.54.24.243:8080/grow/userOwnInfo/list', {
+      params: {
+        pageNum: currentPage3.value,
+        pageSize: 8,
+      }
+    });
+    if (response.data.code === 200) {
+      fundScholarshipVo.value = response.data.data.fundScholarshipVo.map(item => ({
+        ...item,
+        type: formatScholarshipType(item.type) // 格式化奖励类型
+      }));
+      totalNum3.value = response.data.data.scholarshipTotal; // 更新总记录数
+    } else {
+      console.error('获取个人奖励信息失败', response.data.msg);
+    }
+  } catch (error) {
+    console.error('获取个人奖励信息失败', error);
+  }
+};
+// 监听页码变化
+const handlePageChange3 = (newPage: number) => {
+  currentPage3.value = newPage; 
+  fetchScholarshipInfo(); // 重新获取数据
+};
+onMounted(() => {
+  fetchScholarshipInfo();
+});
+//学生惩罚分页
+const fetchPunishInfo = async () => {
+  try {
+    const response = await axios.get('http://106.54.24.243:8080/grow/userOwnInfo/list', {
+      params: {
+        pageNum: currentPage2.value,
+        pageSize: 8,
+      }
+    });
+    if (response.data.code === 200) {
+      fundPunishVo.value = response.data.data.fundPunishVo.map(item => ({
+        ...item,
+        category: formatPunishType(item.category) // 格式化处罚类型
+      }));
+      totalNum2.value = response.data.data.punishTotal; // 更新总记录数
+    } else {
+      console.error('获取个人处分信息失败', response.data.msg);
+    }
+  } catch (error) {
+    console.error('获取个人处分信息失败', error);
+  }
+};
+
+
+// 监听页码变化
+const handlePageChange2 = (newPage: number) => {
+  currentPage2.value = newPage; // 更新当前页码
+  fetchPunishInfo(); // 重新获取数据
+};
+
+// 在组件加载时获取数据
+onMounted(() => {
+  fetchPunishInfo();
+});
+// 社会经历分页
+const fetchSocialExperience = async () => {
+  try {
+    const response = await axios.get('http://106.54.24.243:8080/grow/userOwnInfo/list', {
+      params: {
+        pageNum: currentPage.value,
+        pageSize:8,
+      }
+    });
+    if (response.data.code === 200) {
+      socialExperienceData.value = response.data.data.fundProjectVo; // 社会经历数据
+      totalNum.value = response.data.data.projectTotal; // 总记录数
+    } else {
+      console.error('获取数据失败', response.data.msg);
+    }
+  } catch (error) {
+    console.error('获取数据失败', error);
+  }
+};
+
+onMounted(() => {
+  fetchSocialExperience(); // 在组件加载时获取数据
+});
+
+const handlePageChange = (newPage: number) => {
+  currentPage.value = newPage; // 更新当前页码
+  fetchSocialExperience(); // 重新获取数据
+};
   //编辑个人信息
   interface User {
       type1:any,
@@ -561,6 +650,8 @@ const saveEditInfo = async () => {
       console.log(newExperience.value.startDate);
       console.log(newExperience.value.endDate);
       const response = await axios.post('http://106.54.24.243:8080/grow/project/addProject', {
+        pageSize: 8,
+        pageNum: pageNum,
         startDate: newExperience.value.startDate,
         endDate: newExperience.value.endDate,
         experience: newExperience.value.experience,

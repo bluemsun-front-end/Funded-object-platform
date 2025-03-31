@@ -1,20 +1,31 @@
 <template>
   <div class="header">
     <h1 class="title">个人成长档案</h1>
-    <button class="exit-btn" @click="handleLogout()">退出</button>
+    <button class="exit-btn" @click="centerDialogVisible = true">退出</button>
+    <el-dialog v-model="centerDialogVisible" title="确认退出吗？" width="370" center align-center>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="centerDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleLogout()">
+              确认
+            </el-button>
+          </div>
+        </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import Axios from '@/views/Axios'
+import {ref} from 'vue';
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 const router = useRouter()
+const centerDialogVisible = ref(false);
 const handleLogout = async () => {
   console.log('退出登录')
   try {
     const response = await Axios.post('http://106.54.24.243:8080/auth/logout', {
-     
     })
     if (response.data.code === 200) {
       ElMessage.success('退出成功！')

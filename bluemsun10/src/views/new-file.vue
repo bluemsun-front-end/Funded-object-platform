@@ -348,7 +348,7 @@
                   v-model:currentPage="currentPage2"
                   pager-count="50"
                   @current-change="handlePageChange2"
-                  id="pagenation"
+                  id="pagenation2"
                 />
               </el-tab-pane>
 
@@ -371,7 +371,7 @@
                   v-model:currentPage="currentPage3"
                   pager-count="50"
                   @current-change="handlePageChange3"
-                  id="pagenation"
+                  id="pagenation2"
                 />
               </el-tab-pane>
               <el-tab-pane label="社会经历" class="tab-content">
@@ -388,7 +388,7 @@
                   v-model:currentPage="currentPage"
                   pager-count="50"
                   @current-change="handlePageChange"
-                  id="pagenation"
+                  id="pagenation2"
                 />
               </el-tab-pane>
             </el-tabs>
@@ -1552,18 +1552,12 @@ element.style {
     height: 100%;
     width: 100%;
 }
-/* #pagenation{
-  display: fixed;
-  justify-content: center;
-  margin-top: 20px;
-  margin-bottom:30px;
-  bottom:20px;
-} */
-#pagenation {
+#pagenation2 {
   position: fixed;
-  /* margin-top:10px; */
-  bottom: -1vh;
+  bottom: 1.5vh;
   width: 84vw;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 </style>

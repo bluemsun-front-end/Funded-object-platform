@@ -155,7 +155,7 @@ const tableData = ref([])
 const selectedIds = ref([]) // 用来存储选中的学生ID
 const handleSelectionChange = (selection) => {
   // 提取选中行的学号（ID）
-  selectedIds.value = selection.map((student) => student.id)
+  selectedIds.value = selection.map((student) => student.userId)
   console.log('选中的学生 ID:', selectedIds.value)
 }
 provide('selectedIds', selectedIds)

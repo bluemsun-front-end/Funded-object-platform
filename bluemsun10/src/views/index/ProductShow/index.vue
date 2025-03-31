@@ -118,8 +118,9 @@ img:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px;
+  /*padding: 8px;*/
   /* margin-top:1vw; */
+  padding:13px;
   background-color: rgb(235.9, 245.3, 255); 
   border-bottom-left-radius: 8px; 
   border-bottom-right-radius: 8px; 
@@ -187,8 +188,8 @@ img:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px;
-    margin-top:20px;
+    padding: 15px;
+    margin-top:25px;
     background-color: rgb(235.9, 245.3, 255); 
     border-bottom-left-radius: 8px; 
     border-bottom-right-radius: 8px; 

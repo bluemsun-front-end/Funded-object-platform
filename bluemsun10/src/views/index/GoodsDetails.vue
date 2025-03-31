@@ -10,7 +10,7 @@
         <div class="intro">
           <h2 id="productDescription">{{ productDetail.name }}</h2>
           <br>
-          <span id="name"><el-text class="mx-1 product-intro" size="large">商品介绍:<br />{{ productDetail.intro }}</el-text></span>
+          <span id="name"><el-text class="mx-1" size="large">商品介绍:<br /><div class="product-intro">{{ productDetail.intro }}</div></el-text></span>
           <br>
           <span id="number"><el-text class="mx-1" type="danger" size="large">库存:{{ productDetail.amount }}</el-text></span>
           <br>
@@ -132,7 +132,7 @@ body {
     padding: 20px;
     border: 1px solid #888;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 80%;
+    width: 85%;
     max-width: 700px;
 }
 .all-content{
@@ -144,6 +144,7 @@ body {
   flex-direction: column;
   margin-left:30px;
   margin-bottom:0px;
+  width:64%;
 }
 .count{
   display:flex;
@@ -151,8 +152,8 @@ body {
 }
 
 #productImage {
-  width: 200px; /* 或者其他固定宽度 */
-  height: 200px;
+  width: 240px; /* 或者其他固定宽度 */
+  height: 240px;
   border-radius: 4px;
   margin-bottom: 0; /* 移除底部边距 */
   margin-top:10px;
@@ -241,9 +242,11 @@ body {
     margin-top:10px;
   }
   .product-intro {
+  width: 300px;
+  height:auto;
   word-wrap: break-word; /* 允许在单词内换行 */
   white-space: normal;   /* 允许文本正常换行 */
-  max-width: 300px;      /* 设置最大宽度，可根据需要调整 */
+  max-width: 250px;      /* 设置最大宽度，可根据需要调整 */
   display: inline-block;/* 确保文本块可以应用宽度和换行规则 */
 }
 }

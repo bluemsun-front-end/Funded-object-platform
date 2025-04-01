@@ -46,7 +46,11 @@ import { useNavBarData } from '@/stores/useNavBarData';
 import { ElMessage } from 'element-plus';
 import Axios from '@/views/Axios';
 const router = useRouter();
+
 const authToken = localStorage.getItem('token');
+if (!localStorage.getItem('token')) {
+ router.push('')
+}
 const token = `${authToken}`;
 const activeIndex = ref(0);
 const centerDialogVisible = ref(false)

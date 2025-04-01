@@ -69,36 +69,71 @@ watch(() => props.productDetail, (newVal) => {
 
 const addToCart = () => {
   if (productDetail.value.amount > 0) {
-    const payload = {
-      goodsId: productDetail.value.id,
-      num: num.value
-    };
-    Axios.post('http://106.54.24.243:8080/market/cart', payload)
+    // 首先检查购物车中是否已有此商品及其数量
+    Axios.get('http://106.54.24.243:8080/market/cart/list')
       .then(response => {
-        if (response.data.code ===500) {
-          ElMessage.error(response.data.msg);
-          console.log('商品下架', response);
-        } 
-        else if(response.data.code ===200){
-          console.log('加入购物车成功', response);
-          ElMessage.success('加入购物车成功');
-        }
-        else if(response.data.code ===401){
-          ElMessage.error('认证失败');
-        }
-        else if(response.data.code ===403){
-          ElMessage.error('您没有此权限');
+        if (response.data.code === 200 && response.data.data) {
+          const cartItems = response.data.data;
+          const existingItem = cartItems.find(item => item.goodsId === productDetail.value.id);
+          
+          // 如果购物车已有该商品
+          if (existingItem) {
+            // 计算当前数量加上要添加的数量是否超过库存
+            const totalQuantity = existingItem.num + num.value;
+            
+            if (totalQuantity > productDetail.value.amount) {
+              // 超过库存，显示提示
+              ElMessage.warning(`该商品在购物车中已有${existingItem.num}个，库存仅剩${productDetail.value.amount}个，无法继续添加${num.value}个`);
+              return;
+            }
+          }
+          
+          // 可以添加商品到购物车
+          const payload = {
+            goodsId: productDetail.value.id,
+            num: num.value
+          };
+          
+          Axios.post('http://106.54.24.243:8080/market/cart', payload)
+            .then(response => {
+              if (response.data.code === 500) {
+                ElMessage.error(response.data.msg);
+                console.log('商品下架', response);
+              } 
+              else if(response.data.code === 200){
+                console.log('加入购物车成功', response);
+                ElMessage.success('加入购物车成功');
+              }
+              else if(response.data.code === 401){
+                ElMessage.error('认证失败');
+              }
+              else if(response.data.code === 403){
+                ElMessage.error('您没有此权限');
+              }
+            })
+            .catch(error => {
+              console.error('加入购物车失败', error);
+              ElMessage.error('加入购物车失败');
+            });
         }
       })
       .catch(error => {
-        console.error('加入购物车失败', error);
-        ElMessage.error('加入购物车失败');
+        console.error('获取购物车信息失败', error);
+        ElMessage.error('获取购物车信息失败');
       });
   } 
   else {
     ElMessage.error('库存不足，无法加入购物车');
   }
 };
+
+// 监听数量变化，确保不超过库存
+watch(num, (newVal) => {
+  if (newVal > productDetail.value.amount) {
+    ElMessage.warning(`数量不能超过库存(${productDetail.value.amount})`);
+    num.value = productDetail.value.amount;
+  }
+});
 
 // 关闭弹框的方法
 const close = () => {

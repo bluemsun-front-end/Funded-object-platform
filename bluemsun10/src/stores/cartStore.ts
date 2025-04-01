@@ -26,7 +26,35 @@ export const useCartStore = defineStore('cartStore', () => {
         Axios.get('http://106.54.24.243:8080/market/cart/list')
         .then(function (response) { 
             console.log('getItem', response.data.data);
-            cartItems.value = response.data.data;
+            
+            // 整理购物车数据，将相同商品合并
+            if (response.data.data && Array.isArray(response.data.data)) {
+                const mergedItems: any[] = [];
+                const itemMap = new Map<number, any>();
+                
+                // 遍历所有项目，将相同goodsId的项目合并
+                response.data.data.forEach((item: any) => {
+                    if (itemMap.has(item.goodsId)) {
+                        // 如果已经存在相同商品，更新数量
+                        const existingItem = itemMap.get(item.goodsId);
+                        existingItem.num += item.num;
+                        
+                        // 确保数量不超过限制
+                        if (existingItem.num > existingItem.limitNum) {
+                            existingItem.num = existingItem.limitNum;
+                        }
+                    } else {
+                        // 否则添加新项目
+                        itemMap.set(item.goodsId, {...item});
+                        mergedItems.push(itemMap.get(item.goodsId));
+                    }
+                });
+                
+                cartItems.value = mergedItems;
+            } else {
+                cartItems.value = response.data.data || [];
+            }
+            
             filteredItems.value = [...cartItems.value];
         })
         .catch(function (error) {
@@ -160,38 +188,55 @@ export const useCartStore = defineStore('cartStore', () => {
     //修改购物车数量 
 
     // 更新商品数量的方法
-const updateItemQuantity = async (itemId: number, newQuantity: number) => {
-    try {
-        // 找到对应的商品
-        const item = cartItems.value.find((item: { goodsId: number }) => item.goodsId === itemId);
-        if (!item) {
-            ElMessage.warning('商品不存在');
-            return;
+    const updateItemQuantity = async (itemId: number, newQuantity: number) => {
+        try {
+            // 找到对应的商品
+            const item = cartItems.value.find((item: { goodsId: number }) => item.goodsId === itemId);
+            if (!item) {
+                ElMessage.warning('商品不存在');
+                return;
+            }
+
+            // 首先获取最新的商品库存信息
+            try {
+                const stockResponse = await Axios.get(`http://106.54.24.243:8080/market/goods/${item.goodsId}`);
+                if (stockResponse.data.code === 200 && stockResponse.data.data) {
+                    const currentStock = stockResponse.data.data.amount;
+                    
+                    // 检查请求的数量是否超过最新库存
+                    if (newQuantity > currentStock) {
+                        ElMessage.warning(`商品库存不足，最多只能添加${currentStock}个`);
+                        newQuantity = currentStock;
+                        item.limitNum = currentStock; // 更新本地限制
+                    }
+                }
+            } catch (error) {
+                console.error('获取最新库存信息失败:', error);
+            }
+
+            // 请求体结构
+            const payload = {
+                goodsId: item.goodsId,
+                num: newQuantity,
+                imgUrl: item.imageUrlUrl,
+                goodsName: item.goodsName,
+            };
+
+            // 调用后端接口更新数量
+            const response = await Axios.put('http://106.54.24.243:8080/market/cart', payload);
+
+            if (response.data.code === 200) {
+                // 更新本地数据
+                item.num = newQuantity;
+                ElMessage.success('商品数量已更新');
+            } else {
+                ElMessage.warning(response.data.msg || '更新商品数量失败，请稍后重试！');
+            }
+        } catch (error) {
+            console.error('更新商品数量时出错:', error);
+            ElMessage.error('更新商品数量时出现错误！');
         }
-
-        // 请求体结构
-        const payload = {
-            goodsId: item.goodsId,
-            num: newQuantity,
-            imgUrl: item.imageUrlUrl,
-            goodsName: item.goodsName,
-        };
-
-        // 调用后端接口更新数量
-        const response = await Axios.put('http://106.54.24.243:8080/market/cart', payload);
-
-        if (response.data.code === 200) {
-            // 更新本地数据
-            item.num = newQuantity;
-            ElMessage.success('商品数量已更新');
-        } else {
-            ElMessage.warning(response.data.msg || '更新商品数量失败，请稍后重试！');
-        }
-    } catch (error) {
-        console.error('更新商品数量时出错:', error);
-        ElMessage.error('更新商品数量时出现错误！');
-    }
-};
+    };
 
 
     return {

@@ -34,6 +34,7 @@
                   </el-tooltip>
                   <p class="item-price">{{ formatPrice(item).replace('¥', '') }}</p>
                   <p class="currency-type">货币类型: {{ item.currencyType === '0' ? '日用币' : '服装币' }}</p>
+                  <p class="stock-info">库存剩余: <span :class="{'low-stock': item.limitNum <= 5}">{{ item.limitNum }}</span></p>
                 </div>
                 
                 <div class="item-actions">
@@ -41,10 +42,10 @@
                     v-model="item.num"
                     :min="1"
                     :max="item.limitNum"
-                    @change="(value) => handleQuantityChange(item, value)"
+                    @change="(value) => throttledQuantityChange(item, value)"
                     class="quantity-input"
                   />
-                  <el-button type="danger" @click="removeSelectedItems(item.goodsId)" class="remove">移除</el-button>
+                  <el-button type="danger" @click="showRemoveConfirmation(item.goodsId)" class="remove">移除</el-button>
                 </div>
               </div>
             </div>
@@ -113,6 +114,24 @@
                 </div>
               </template>
             </el-dialog>
+
+            <!-- 确认移除对话框 -->
+            <el-dialog
+              v-model="removeConfirmVisible"
+              title="确认移除"
+              width="400px"
+              class="checkout-dialog"
+            >
+              <div class="remove-confirm-content">
+                <p>确定要从购物车中移除选中的商品吗？</p>
+              </div>
+              <template #footer>
+                <div class="dialog-footer">
+                  <el-button @click="removeConfirmVisible = false">取消</el-button>
+                  <el-button type="danger" @click="confirmRemove">确认移除</el-button>
+                </div>
+              </template>
+            </el-dialog>
           </div>
       </div>
     </div>
@@ -123,8 +142,9 @@
   import NavBar from '@/components/NavBar/index.vue'
   import { useCartStore } from '@/stores/cartStore';
   import { storeToRefs } from 'pinia';
-  import { onMounted } from 'vue';
+  import { onMounted, ref } from 'vue';
   import isLogin from '@/api/isLogin'
+  import { ElMessage } from 'element-plus';
 
   const cartStore = useCartStore();
   const { 
@@ -150,18 +170,78 @@
     toHome
   } = cartStore;
 
+  // 节流函数实现
+  const throttle = (fn, delay) => {
+    let timer = null;
+    let lastTime = 0;
+    
+    return function(...args) {
+      const now = Date.now();
+      const remaining = delay - (now - lastTime);
+      
+      if (remaining <= 0) {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+        lastTime = now;
+        fn.apply(this, args);
+      } else if (!timer) {
+        timer = setTimeout(() => {
+          lastTime = Date.now();
+          fn.apply(this, args);
+          timer = null;
+        }, remaining);
+      }
+    };
+  };
+
+  // 移除商品的确认对话框
+  const removeConfirmVisible = ref(false);
+  const itemToRemove = ref(null);
+
+  // 显示移除确认对话框
+  const showRemoveConfirmation = (goodsId) => {
+    itemToRemove.value = goodsId;
+    removeConfirmVisible.value = true;
+  };
+
+  // 确认移除
+  const confirmRemove = () => {
+    if (itemToRemove.value) {
+      removeSelectedItems(itemToRemove.value);
+      removeConfirmVisible.value = false;
+      itemToRemove.value = null;
+    }
+  };
+
+  // 使用节流函数包装handleQuantityChange
+  const handleQuantityChange = (item, value) => {
+    // 如果输入的数量超过库存限制，立即处理并显示警告
+    if (value > item.limitNum) {
+      value = item.limitNum;
+      item.num = item.limitNum;
+      ElMessage.warning({
+        message: `商品"${item.goodsName}"的数量不能超过库存上限(${item.limitNum})`,
+        duration: 3000,
+        showClose: true,
+        type: 'warning'
+      });
+    }
+    
+    updateSelectedTotalPrice(); // 更新总价
+    cartStore.updateItemQuantity(item.goodsId, value); // 调用 Pinia 方法更新数量
+  };
+
+  // 应用节流处理，设置300ms的延迟
+  const throttledQuantityChange = throttle(handleQuantityChange, 300);
+
   onMounted(() => {
     console.log('开始挂载')
     getItem();
     getCurrency();
     isLogin();  
   });  
-
-
-  const handleQuantityChange = (item, value) => {
-  cartStore.updateSelectedTotalPrice(); // 更新总价
-  cartStore.updateItemQuantity(item.goodsId, value); // 调用 Pinia 方法更新数量
-};
 
   // 确保全选功能正常
   const handleSelectAll = (val) => {
@@ -238,6 +318,18 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
+}
+
+/* 库存信息 */
+.stock-info {
+  font-size: 13px;
+  color: #6e6e73;
+  margin-top: 8px;
+}
+
+.low-stock {
+  color: #ff3b30;
+  font-weight: bold;
 }
 
 /* 商品卡片样式 */
@@ -626,6 +718,17 @@
 .dialog-footer :deep(.el-button--primary:hover) {
   background-color: #333333;
   border-color: #333333;
+}
+
+/* 确认移除对话框样式 */
+.remove-confirm-content {
+  padding: 10px 0;
+  text-align: center;
+}
+
+.remove-confirm-content p {
+  font-size: 16px;
+  color: #1d1d1f;
 }
 
 /* 优雅的动画效果 */

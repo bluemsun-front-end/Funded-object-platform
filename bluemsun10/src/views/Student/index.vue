@@ -128,10 +128,13 @@ import SearchBox from './components/SearchBox.vue'
 import { onMounted, ref, provide, computed } from 'vue'
 import axios from 'axios'
 import request from '@/api/request'
+<<<<<<< Updated upstream
 import { de } from 'element-plus/es/locale'
 import type { ComponentSize } from 'element-plus';
 import { ElMessage } from 'element-plus';
 
+=======
+>>>>>>> Stashed changes
 
 const userInfo = ref({
   name: 'Kimi',

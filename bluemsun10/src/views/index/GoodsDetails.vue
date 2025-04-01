@@ -69,36 +69,79 @@ watch(() => props.productDetail, (newVal) => {
 
 const addToCart = () => {
   if (productDetail.value.amount > 0) {
-    const payload = {
-      goodsId: productDetail.value.id,
-      num: num.value
-    };
-    Axios.post('http://106.54.24.243:8080/market/cart', payload)
+    // 首先检查购物车中是否已有该商品
+    Axios.get('http://106.54.24.243:8080/market/cart/list')
       .then(response => {
-        if (response.data.code ===500) {
-          ElMessage.error(response.data.msg);
-          console.log('商品下架', response);
-        } 
-        else if(response.data.code ===200){
-          console.log('加入购物车成功', response);
-          ElMessage.success('加入购物车成功');
+        const cartItems = response.data.data || [];
+        // 查找购物车中是否已有该商品
+        const existingItem = cartItems.find(item => item.goodsId === productDetail.value.id);
+        
+        if (existingItem) {
+          // 如果已有该商品，检查是否超过库存限制
+          const totalQuantity = existingItem.num + num.value;
+          if (totalQuantity > productDetail.value.amount) {
+            ElMessage.warning(`商品已在购物车中，添加后将超过库存上限(${productDetail.value.amount})，最多可添加${productDetail.value.amount - existingItem.num}个`);
+            // 自动调整为可添加的最大数量
+            num.value = Math.max(1, productDetail.value.amount - existingItem.num);
+            
+            if (productDetail.value.amount - existingItem.num <= 0) {
+              ElMessage.error('该商品已达到库存上限，无法添加更多');
+              return;
+            }
+          }
+        } else {
+          // 没有该商品，检查要添加的数量是否超过库存
+          if (num.value > productDetail.value.amount) {
+            ElMessage.warning(`商品库存不足，最多只能添加${productDetail.value.amount}个`);
+            num.value = productDetail.value.amount; // 自动调整为最大库存数量
+          }
         }
-        else if(response.data.code ===401){
-          ElMessage.error('认证失败');
-        }
-        else if(response.data.code ===403){
-          ElMessage.error('您没有此权限');
-        }
+        
+        // 继续添加购物车逻辑
+        const payload = {
+          goodsId: productDetail.value.id,
+          num: num.value
+        };
+        
+        Axios.post('http://106.54.24.243:8080/market/cart', payload)
+          .then(response => {
+            if (response.data.code === 500) {
+              ElMessage.error(response.data.msg);
+              console.log('商品下架', response);
+            } 
+            else if(response.data.code === 200){
+              console.log('加入购物车成功', response);
+              ElMessage.success('加入购物车成功');
+            }
+            else if(response.data.code === 401){
+              ElMessage.error('认证失败');
+            }
+            else if(response.data.code === 403){
+              ElMessage.error('您没有此权限');
+            }
+          })
+          .catch(error => {
+            console.error('加入购物车失败', error);
+            ElMessage.error('加入购物车失败');
+          });
       })
       .catch(error => {
-        console.error('加入购物车失败', error);
-        ElMessage.error('加入购物车失败');
+        console.error('获取购物车信息失败', error);
+        ElMessage.error('获取购物车信息失败');
       });
   } 
   else {
     ElMessage.error('库存不足，无法加入购物车');
   }
 };
+
+// 监听数量变化，确保不超过库存
+watch(num, (newVal) => {
+  if (newVal > productDetail.value.amount) {
+    ElMessage.warning(`数量不能超过库存(${productDetail.value.amount})`);
+    num.value = productDetail.value.amount;
+  }
+});
 
 // 关闭弹框的方法
 const close = () => {

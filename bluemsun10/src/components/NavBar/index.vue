@@ -78,6 +78,11 @@ const checkIfMobile = () => {
 onMounted(() => {
   checkIfMobile();
   window.addEventListener('resize', checkIfMobile);
+  onMounted(() => {
+  if (!localStorage.getItem('token')) {
+    window.location.href = 'http://localhost:5173/'
+}
+});
 });
 
 const toggleMenu = () => {

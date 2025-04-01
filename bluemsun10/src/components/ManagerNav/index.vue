@@ -48,9 +48,11 @@ import Axios from '@/views/Axios';
 const router = useRouter();
 
 const authToken = localStorage.getItem('token');
-if (!localStorage.getItem('token')) {
- router.push('')
+onMounted(() => {
+  if (!localStorage.getItem('token')) {
+    window.location.href = 'http://localhost:5173/'
 }
+});
 const token = `${authToken}`;
 const activeIndex = ref(0);
 const centerDialogVisible = ref(false)

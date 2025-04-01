@@ -142,7 +142,6 @@ onMounted(() => {
     window.location.href = 'http://localhost:5173/'
 }
 });
-
 // // 点击菜单项时的处理函数
 const handleMenuClick = (page: string) => {
   if (page === 'superMarket') {

@@ -382,7 +382,7 @@
                   </div>
                 </el-scrollbar>
               </el-tab-pane>
-              <el-tab-pane label="个人处分" class="biaoge,tab-content">
+              <el-tab-pane label="个人处分" class="tab-content">
                 <el-table :data="fundPunishVo" style="width: 100%;height:92%" row-height="60">
                   <el-table-column prop="category" label="处罚类型"  flex="1"/>
                   <el-table-column prop="punishTime" label="处罚时间" flex="1" sortable/>
@@ -405,8 +405,8 @@
                 />
               </el-tab-pane>
 
-              <el-tab-pane label="个人奖励" class="biaoge,tab-content">
-                <el-table :data="fundScholarshipVo" style="width: 100%;" row-height="60" layout="auto">
+              <el-tab-pane label="个人奖励" class="tab-content">
+                <el-table :data="fundScholarshipVo" style="width: 100%;height:92%" row-height="60" layout="auto">
                   <el-table-column prop="type" label="奖励类型" />
                   <el-table-column prop="grantDate" label="授予时间"  sortable />
                   <el-table-column prop="amount" label="奖励金额"/>

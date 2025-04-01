@@ -7,7 +7,7 @@
           <div>
             <el-icon :size="24"><User /></el-icon>
           </div>
-          <input type="text" placeholder="学号" v-model="uname" />
+          <input type="text" placeholder="学号/账号" v-model="uname" />
         </div>
         <div class="password">
           <div>
@@ -27,7 +27,7 @@
         <div>
           <el-icon :size="24"><User /></el-icon>
         </div>
-        <input type="text" placeholder="学号" v-model="uname"/>
+        <input type="text" placeholder="学号/账号" v-model="uname"/>
       </div>
       <div class="password">
         <div>
@@ -123,7 +123,22 @@ const log = async () => {
         'content-language': 'zh_CN'
       }
     }
-    const response = await axios.post('http://106.54.24.243:8080/auth/login', {
+    let flag=true
+    if(password.value.length>20||password.value.length<5){
+      ElMessage.error('用户密码长度必须在5到28个字符之间')
+      flag=false
+    }
+    else if(password.value.trim()=='')
+    {
+      ElMessage.error('密码不能为空')
+      flag=false
+    }
+    else if(uname.value.trim()==''){
+      ElMessage.error('用户名不能为空')
+      flag=false
+    }
+    if(flag==true){
+      const response = await axios.post('http://106.54.24.243:8080/auth/login', {
       tenantId: '000000',
       username: uname.value,
       password: password.value,
@@ -150,6 +165,7 @@ const log = async () => {
       router.push('/framework')
     } else {
       ElMessage.error(response.data.msg)
+    }
     }
   } catch (error) {
     loading.value = false

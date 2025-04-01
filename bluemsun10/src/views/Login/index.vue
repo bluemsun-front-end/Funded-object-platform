@@ -1,143 +1,128 @@
 <template>
-    <div :class="container">
-      <form v-if="isPc" class="pc">
-        <div class="form_left">
-          <h1>资助统一身份认证</h1>
-          <!-- <h3>账号登录</h3> -->
-          <div class="uname">
-            <div>
-              <el-icon :size="24"><User /></el-icon>
-            </div>
-            <input type="text" placeholder="学号" v-model="uname" />
+  <div :class="container">
+    <form v-if="isPc" class="pc">
+      <div class="form_left">
+        <h1>资助统一身份认证</h1>
+        <div class="uname">
+          <div>
+            <el-icon :size="24"><User /></el-icon>
           </div>
-          <div class="password">
-            <div>
-              <el-icon :size="24"><Unlock /></el-icon>
-            </div>
-            <input type="password" placeholder="密码" v-model="password" />
-          </div>
-          <div class="remenber">
-            <el-checkbox v-model="remenber" label="记住密码" size="large" fill="#f5f5f5" />
-          </div>
-          <div class="btn"><button class="log" @click.prevent="log">登录</button></div>
+          <input type="text" placeholder="学号" v-model="uname" />
         </div>
-      </form>
-      <form v-if="isPc===false" class="mobile">
-          <h1>资助统一身份认证</h1>
-          <!-- <h3>账号登录</h3> -->
-          <div class="uname">
-            <div>
-              <el-icon :size="24"><User /></el-icon>
-            </div>
-            <input type="text" placeholder="学号" v-model="uname" />
+        <div class="password">
+          <div>
+            <el-icon :size="24"><Unlock /></el-icon>
           </div>
-          <div class="password">
-            <div>
-              <el-icon :size="24"><Unlock /></el-icon>
-            </div>
-            <input type="password" placeholder="密码" v-model="password" />
-          </div>
-          <div class="remenber">
-            <el-checkbox v-model="remenber" label="记住密码" size="large" fill="#f5f5f5" />
-          </div>
-          <div class="btn"><button class="log" @click.prevent="log">登录</button></div>
-      </form>
-    </div>
+          <input type="password" placeholder="密码" v-model="password" />
+        </div>
+        <div class="remenber">
+          <el-checkbox v-model="remenber" label="记住密码" size="large" fill="#f5f5f5" />
+        </div>
+        <div class="btn"><button class="log" @click.prevent="log">登录</button></div>
+      </div>
+    </form>
+    <form v-if="!isPc" class="mobile">
+      <h1>资助统一身份认证</h1>
+      <div class="uname">
+        <div>
+          <el-icon :size="24"><User /></el-icon>
+        </div>
+        <input type="text" placeholder="学号" v-model="uname"/>
+      </div>
+      <div class="password">
+        <div>
+          <el-icon :size="24"><Unlock /></el-icon>
+        </div>
+        <input type="password" placeholder="密码" v-model="password" />
+      </div>
+      <div class="remenber" style="margin-left:45%">
+        <el-checkbox v-model="remenber" label="记住密码" size="large" fill="#f5f5f5" />
+      </div>
+      <div class="btn"><button class="log" @click.prevent="log">登录</button></div>
+    </form>
+  </div>
 </template>
 
 <script setup>
-import { onMounted, ref,watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import axios from 'axios'
-import { ElForm, ElFormItem, ElInput, ElButton, ElCheckbox, ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { User,Unlock } from '@element-plus/icons-vue'
+import { User, Unlock } from '@element-plus/icons-vue'
 import isLogin from '@/api/isLogin'
-let container="container container1"
+
 const router = useRouter()
-// 表单数据和状态
+
+// 表单数据与状态
 const uname = ref('')
 const password = ref('')
-const remenber = ref(true)
+const remenber = ref(false)
 const loading = ref(false)
-// const clientId = ref('')
-const token=localStorage.getItem('token');
-const role =localStorage.getItem('role')
+
+const clientId = ref('')
+let isPc = ref(true)
+let container = ref('')
+
+const token = localStorage.getItem('token')
+const role = localStorage.getItem('role')
 const redirect = router.currentRoute.value.query.redirect
-// 定义一个响应式变量来存储客户端ID
-const clientId = ref('');
-// 定义一个变量来判断是电脑端还是移动端
-let isPc = true;
-// 定义一个函数来判断是否是电脑端
-const isPC = () => {
-  const userAgent = navigator.userAgent;
 
-  // 定义一些常见的移动设备和浏览器的用户代理特征
-  const mobileAgents = [
-    /android/i,     // Android设备
-    /iphone|ipad|ipod/i, // iOS设备
-    /windows phone/i, // Windows Phone设备
-    /blackberry/i,  // Blackberry设备
-    /opera mini/i,  // Opera Mini浏览器（通常用于移动设备）
-    /mobile/i,      // 通用移动设备标记
-    /touch/i        // 触摸设备标记（可能包括桌面触摸屏）
-  ];
+const savedUsername = localStorage.getItem('savedUsername') || ''
+const savedPassword = localStorage.getItem('savedPassword') || ''
 
-  // 初始化isPc为true
-  isPc = true;
-
-  // 检查用户代理字符串是否包含任何移动设备的特征
-  for (let i = 0; i < mobileAgents.length; i++) {
-    if (mobileAgents[i].test(userAgent)) {
-      isPc = false; // 如果是移动设备，则将isPc设置为false
-    }
+// 登录判断与跳转
+onMounted(async () => {
+  detectDeviceType()
+  setClientId()
+  // 设置 container 类名，避免抖动
+  container.value = isPc.value ? 'container container1' : 'container container2'
+  if (token && role) {
+    router.push('/framework')
   }
-  console.log(isPc);
-      //改变clientId查看是移动端还是PC端
-    if (isPc == false) {
-      clientId.value = '428a8310cd442757ae699df5d894f051'
-    } else {
-      clientId.value = 'e5cd7e4891bf95d1d19206ce24a7b32e'
-    }
- localStorage.setItem('client_id',clientId.value)
-};
 
-
-onMounted(
-async() => {
-   isPC()
-   if(isPc===false)
-      container="container container2"
-   else
-      container="container container1"
- const isLoggedin=await isLogin();
-  if(!isLoggedin)
-  {
+  // 检查登录状态
+  const isLoggedIn = await isLogin()
+  if (!isLoggedIn) {
     localStorage.removeItem('role')
     localStorage.removeItem('token')
   }
-
-
-  // if(redirect&&token&&role)
-  //   {
-  //     console.log('redirect', redirect)
-  //      window.location.href = `${redirect}?token=${token}&role=${role}`
-  //   }
 })
 
+// 检测设备类型并设置 isPc
+const detectDeviceType = () => {
+  const userAgent = navigator.userAgent
+  const mobileAgents = [
+    /android/i, /iphone|ipad|ipod/i, /windows phone/i,
+    /blackberry/i, /opera mini/i, /mobile/i, /touch/i
+  ]
 
+  // 默认认为是 PC
+  isPc.value = true
 
-// watch(clientId, (newValue, oldValue) => {
-//   // location.reload()
-// });
+  // 如果匹配到移动设备的特征，则认为是移动端
+  for (let agent of mobileAgents) {
+    if (agent.test(userAgent)) {
+      isPc.value = false
+      break
+    }
+  }
+}
 
+// 根据设备类型设置 clientId
+const setClientId = () => {
+  clientId.value = isPc.value ? 'e5cd7e4891bf95d1d19206ce24a7b32e' : '428a8310cd442757ae699df5d894f051'
+  localStorage.setItem('client_id', clientId.value)
+}
+
+// 登录处理
 const log = async () => {
   try {
     loading.value = true
     const config = {
       headers: {
-    'content-language': 'zh_CN'
-  }
-};
+        'content-language': 'zh_CN'
+      }
+    }
     const response = await axios.post('http://106.54.24.243:8080/auth/login', {
       tenantId: '000000',
       username: uname.value,
@@ -147,25 +132,23 @@ const log = async () => {
       grantType: 'password',
     }, config)
 
-
-
     if (response.data.code === 200) {
       ElMessage.success('登录成功')
       localStorage.setItem('token', response.data.data.access_token)
-      // console.log('response.data是', response.data.data.roles[0].roleName)
-      //判断是否有回调参数
       localStorage.setItem('role', response.data.data.roles[0].roleName)
-    //   if (redirect)
-    // {
-    //   console.log('role是', role);
 
-    //   window.location.href = `${redirect}?token=${response.data.data.access_token}&role=${response.data.data.roles[0].roleName}`
-    // }
-      // }
+      // 如果勾选了“记住密码”，将用户名和密码保存到 localStorage
+      if (remenber.value) {
+        localStorage.setItem('savedUsername', uname.value)
+        localStorage.setItem('savedPassword', password.value)
+      } else {
+        // 如果没有勾选记住密码，清除之前保存的密码
+        localStorage.removeItem('savedUsername')
+        localStorage.removeItem('savedPassword')
+      }
+
       router.push('/framework')
-    }
-    else {
-      // console.log(response.data.msg);
+    } else {
       ElMessage.error(response.data.msg)
     }
   } catch (error) {
@@ -286,11 +269,12 @@ input[type='text']:focus {
   margin: 6% auto;
   padding: 0;
   border-radius: 5px;
+  vertical-align: middle;
 }
 .remenber {
-  width: 70%;
+  width: 34%;
   height: 2%;
-  margin: 0 auto;
+  float: right;
 }
 .el-checkbox.el-checkbox--large {
   height: 24px;
@@ -335,27 +319,59 @@ input:focus {
   padding: 10px;
 }
 
-/* 移动端*/
-.mobile{
+/* 移动端 */
+.mobile {
   background-color: #fff;
   border-radius: 10px;
   width: 250px;
   height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.mobile h1{
+
+.mobile h1 {
   font-size: 22px;
   text-align: center;
   line-height: 24px;
   padding: 20px 0;
 }
-.mobile .uname div,.mobile .password div{
-  padding: 5px;
+
+.mobile .uname,
+.mobile .password {
+  background-color: #f5f5f5;
+  width: 80%;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
 }
-.mobile .uname input,.mobile .password input {
-  margin-left: 10px;
-  width: 135px;
+
+.mobile .uname input,
+.mobile .password input {
+  width: 80%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  padding: 10px;
 }
-.mobile .btn{
-  margin-top: 35px;
+
+.mobile .btn {
+  width: 100%;
+  margin-top: 10%;
+  text-align: center;
 }
+
+.mobile .btn .log {
+  width: 80%;
+  background-color: #003685;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  border: none;
+}
+
 </style>

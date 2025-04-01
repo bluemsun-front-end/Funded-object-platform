@@ -212,6 +212,7 @@
   const loadtitle=ref('上传图片')
   const loadflag=ref(true)
   const centerDialogVisibledetail=ref(false)
+  const uploading = ref(false);
   // 进货记录
   const form1 = reactive({
     name: '',
@@ -293,6 +294,10 @@
     name: [
       { required: true, message: '请输入商品名称', trigger: 'blur' },
     ],
+    imageUrl: [
+  { required: true, message: '请上传商品图片', trigger: 'change' },
+],
+
     currencyType: [
       {
         required: true,
@@ -488,8 +493,16 @@
       alter_title.value='增加货物'
   }
   const addItem=()=>{
+    
           if(alter_title.value==='增加货物'){
-
+              if (!ruleForm.imageUrl) {
+                 ElMessage.error('请先上传商品图片');
+              return; 
+             }
+               if (uploading.value) {
+                  ElMessage.warning('图片正在上传中，请稍后再试');
+              return;
+              }
               addGoods()
               fetchGoods(currentPage.value)
           }
@@ -505,6 +518,7 @@
   }
   const addGoods = async () => {
       console.log(ruleForm.status);
+      
       status.value=(ruleForm.status==='上架中'?'0':'1')
       try {
       const requestData = {
@@ -573,10 +587,17 @@
   const selectedFile = ref(null);
   const fileInput = ref(null);
   // 上传文件
-  const handleFileChange = (event) => {  
+  const handleFileChange = (event) => { 
+    uploading.value = true;  
     const formData = new FormData();
     const imageFile = event.target.files[0];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']; 
     if (imageFile) {
+      if (!allowedTypes.includes(imageFile.type)) {
+      ElMessage.error('只能上传 JPG, PNG 或 GIF 格式的图片');
+      uploading.value = false;
+      return; // 如果文件类型不符合要求，直接返回
+    }
       formData.append('file', imageFile);
       addFile(formData)
   };
@@ -600,11 +621,13 @@
     } catch (error) {
       ElMessage.error('上传图片失败')
     }
+    uploading.value = false; 
   };
   // 图片回显
   const getimag=async (ossIds)=>{
       const response = await Axios.get(`http://106.54.24.243:8080/resource/oss/listByIds/${ossIds}`)
       imageUrlUrl.value=response.data.data[0].url
+      ruleForm.imageUrl = response.data.data[0].url
       console.log(response.data.data[0].url);
   }
   // 上传图片的两个点击事件

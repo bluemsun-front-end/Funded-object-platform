@@ -1,8 +1,8 @@
 <template>
   <div class="header">
     <h1 class="title">个人成长档案</h1>
-    <button class="exit-btn" @click="centerDialogVisible = true">退出</button>
-    <el-dialog v-model="centerDialogVisible" title="确认退出吗？" width="370" center align-center>
+    <button class="exit-btn" @click="centerDialogVisible = true">返回</button>
+    <el-dialog v-model="centerDialogVisible" title="确认返回吗？" width="370" center align-center>
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="centerDialogVisible = false">取消</el-button>

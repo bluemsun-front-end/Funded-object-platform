@@ -1,6 +1,6 @@
 <template>
   <div>
-      <NavBar />
+      <NavBar_back />
       <div class="background1">
           <el-tabs tabPosition="top" type="border-card" style="height: 90vh;border:none" class="demo-tabs">
               <el-tab-pane  label="个人信息" class="tab-content">
@@ -397,7 +397,7 @@
                   background
                   layout="prev, pager, next"
                   :total="totalNum2"
-                  :page-size="8"
+                  :page-size="pageSize2"
                   v-model:currentPage="currentPage2"
                   pager-count="50"
                   @current-change="handlePageChange2"
@@ -420,7 +420,7 @@
                   background
                   layout="prev, pager, next"
                   :total="totalNum3"
-                  :page-size="8"
+                  :page-size="pageSize3"
                   v-model:currentPage="currentPage3"
                   pager-count="50"
                   @current-change="handlePageChange3"
@@ -442,7 +442,7 @@
                   background
                   layout="prev, pager, next"
                   :total="totalNum"
-                  :page-size="8"
+                  :page-size="pageSize"
                   v-model:currentPage="currentPage"
                   pager-count="50"
                   @current-change="handlePageChange"
@@ -457,11 +457,11 @@
 
 <script lang="ts" setup>
 import axios from 'axios'
+import NavBar_back from './Student/components/NavBar_back.vue'
 import NavBar from './Student/components/NavBar.vue';
-import { computed, ref,onMounted,reactive} from 'vue'
+import { computed, ref,onMounted,reactive,onBeforeUnmount} from 'vue'
 import {Iphone,Location,OfficeBuilding,Tickets,User,} from '@element-plus/icons-vue'
 import type { ComponentSize } from 'element-plus'
-import { h } from 'vue'
 import { ElMessage, ElMessageBox ,ElDialog} from 'element-plus'
 const currentPage = ref(1);
 const totalNum = ref(0); // 存储商品总数的响应式变量
@@ -469,6 +469,43 @@ const currentPage2= ref(1);
 const totalNum2 = ref(0); // 存储商品总数的响应式变量
 const currentPage3= ref(1);
 const totalNum3 = ref(0); // 存储商品总数的响应式变量
+
+// 响应式页面大小
+const pageSize = ref(8)
+const pageSize2 = ref(8)
+const pageSize3 = ref(8)
+
+// 检测屏幕宽度并更新pageSize
+const updatePageSize = () => {
+  if (window.innerWidth >= 1300) {
+    pageSize.value = 10
+    pageSize2.value = 10
+    pageSize3.value = 10
+  } else if (window.innerWidth <= 768) {
+    pageSize.value = 6
+    pageSize2.value = 6
+    pageSize3.value = 6
+  } else {
+    pageSize.value = 8
+    pageSize2.value = 8
+    pageSize3.value = 8
+  }
+}
+
+// 添加和移除resize事件监听器
+onMounted(() => {
+  updatePageSize()
+  window.addEventListener('resize', updatePageSize)
+  fetchStudentInfo()
+  fetchSocialExperience()
+  fetchPunishInfo()
+  fetchScholarshipInfo()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updatePageSize)
+})
+
   const size = ref<ComponentSize>('default')
   const iconStyle = computed(() => {
   const marginMap = {
@@ -571,7 +608,7 @@ const fetchScholarshipInfo = async () => {
     const response = await axios.get('http://106.54.24.243:8080/grow/userOwnInfo/list', {
       params: {
         pageNum: currentPage3.value,
-        pageSize: 8,
+        pageSize: pageSize3.value,
       }
     });
     if (response.data.code === 200) {
@@ -602,7 +639,7 @@ const fetchPunishInfo = async () => {
     const response = await axios.get('http://106.54.24.243:8080/grow/userOwnInfo/list', {
       params: {
         pageNum: currentPage2.value,
-        pageSize: 8,
+        pageSize: pageSize2.value,
       }
     });
     if (response.data.code === 200) {
@@ -636,7 +673,7 @@ const fetchSocialExperience = async () => {
     const response = await axios.get('http://106.54.24.243:8080/grow/userOwnInfo/list', {
       params: {
         pageNum: currentPage.value,
-        pageSize:8,
+        pageSize:pageSize.value,
       }
     });
     if (response.data.code === 200) {
@@ -1378,12 +1415,12 @@ default:
     margin-right:1vw;
 }
 .background1{
-  background: #f7f3f3;
+  background: #ebf0fc;
 }
 .el-tabs--border-card {
       background: var(--el-bg-color-overlay);
- }
- .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+}
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
       background-color: var(--el-bg-color-overlay);
       border-left-color: var(--el-border-color);
       border-right-color: var(--el-border-color);

@@ -4,12 +4,8 @@
   <div class="student-file">
     <SearchBox @search="search" />
 
-    <el-table
-      :data="tableData"
-      class="student-table"
-      @selection-change="handleSelectionChange"
-      v-loading="loadings.table"
-    >
+    <el-table :data="tableData" class="student-table" @selection-change="handleSelectionChange"
+      v-loading="loadings.table">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="studentId" label="学号" minWidth="180"></el-table-column>
       <el-table-column prop="name" label="姓名" minWidth="180"></el-table-column>
@@ -26,32 +22,17 @@
       </el-table-column>
       <el-table-column label="操作" width="120">
         <template #default="{ row }">
-          <el-button link type="primary" size="small" @click="handleViewDetail(row)"
-            >查看详情</el-button
-          >
+          <el-button link type="primary" size="small" @click="handleViewDetail(row)">查看详情</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination
-      background
-      layout="->, sizes, prev, pager, next, jumper, total"
-      v-model:current-page="query.pageNum"
-      v-model:page-size="query.pageSize"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :total="total"
-      class="my-pagination"
-    />
+    <el-pagination background layout="->, sizes, prev, pager, next, jumper, total" v-model:current-page="query.pageNum"
+      v-model:page-size="query.pageSize" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+      :total="total" class="my-pagination" />
 
-    <el-dialog
-      v-model="visible"
-      :title="`学生信息`"
-      width="1000"
-      :close-on-click-modal="false"
-      :before-close="closeDialog"
-    >
+    <el-dialog v-model="visible" :title="`学生信息`" width="1000" :close-on-click-modal="false" :before-close="closeDialog">
       <el-descriptions :column="4" border class="custom-descriptions">
         <el-descriptions-item label="学号">{{ studentRow.studentId }}</el-descriptions-item>
         <el-descriptions-item label="姓名">{{ studentRow.name }}</el-descriptions-item>
@@ -97,7 +78,7 @@
       </el-descriptions>
       <el-tabs type="border-card" style="margin-top: 20px">
         <el-tab-pane label="个人处分">
-          <el-table :data="fundPunishVo" height="350">
+          <el-table :data="paginatedPunishVo" height="350">
             <el-table-column prop="category" label="类别" minWidth="180">
               <template #default="{ row }">
                 {{ formatPunishType(+row.category) }}
@@ -106,9 +87,12 @@
             <el-table-column prop="reason" label="原因" minWidth="180"></el-table-column>
             <el-table-column prop="punishTime" label="处分时间" minWidth="180"></el-table-column>
           </el-table>
+          <el-pagination background layout="prev, pager, next" :total="totalNum2" :page-size="6"
+            v-model:currentPage="currentPage2" pager-count="50" @current-change="handlePageChange2"
+            :disabled="loadingStates.punish" id="pagenation3" class="pagination" />
         </el-tab-pane>
         <el-tab-pane label="个人奖励">
-          <el-table :data="fundScholarshipVo" height="350">
+          <el-table :data="paginatedScholarshipVo" height="350">
             <el-table-column prop="category" label="类型" minWidth="180">
               <template #default="{ row }">
                 {{ formatFundType(+row.type) }}
@@ -117,19 +101,22 @@
             <el-table-column prop="grantDate" label="授予日期" minWidth="180"></el-table-column>
             <el-table-column prop="amount" label="金额" minWidth="180"></el-table-column>
           </el-table>
+          <el-pagination background layout="prev, pager, next" :total="totalNum3" :page-size="6"
+            v-model:currentPage="currentPage3" pager-count="50" @current-change="handlePageChange3"
+            :disabled="loadingStates.scholarship" id="pagenation3" class="pagination" />
         </el-tab-pane>
         <el-tab-pane label="社会经历">
-          <el-table :data="fundProjectVo" height="350">
+          <el-table :data="paginatedProjectVo" height="350">
             <el-table-column prop="startDate" label="开始日期" minWidth="180"></el-table-column>
             <el-table-column prop="endDate" label="结束日期" minWidth="180"></el-table-column>
             <el-table-column prop="experience" label="经历描述" minWidth="180"></el-table-column>
           </el-table>
+          <el-pagination background layout="prev, pager, next" :total="totalNum" :page-size="6"
+            v-model:currentPage="currentPage" pager-count="50" @current-change="handlePageChange"
+            :disabled="loadingStates.project" id="pagenation3" class="pagination" />
         </el-tab-pane>
-        <el-button
-          style="display: block; margin: 0px auto; padding: 10px 20px"
-          @click="exportStudentInfo()"
-          >导出信息</el-button
-        >
+        <el-button style="display: block; margin: 0px auto; padding: 10px 20px"
+          @click="exportStudentInfo()">导出信息</el-button>
       </el-tabs>
     </el-dialog>
   </div>
@@ -138,10 +125,13 @@
 <script setup lang="ts">
 import NavBar from './components/NavBar.vue'
 import SearchBox from './components/SearchBox.vue'
-import { onMounted, ref, provide } from 'vue'
+import { onMounted, ref, provide, computed } from 'vue'
 import axios from 'axios'
 import request from '@/api/request'
 import { de } from 'element-plus/es/locale'
+import type { ComponentSize } from 'element-plus';
+import { ElMessage } from 'element-plus';
+
 
 const userInfo = ref({
   name: 'Kimi',
@@ -227,10 +217,19 @@ const handleViewDetail = async (row: any) => {
   const res = await request.get(
     'http://106.54.24.243:8080/grow/userInfo/detail?userId=' + row.userId,
   )
+
   studentRow.value = res.data.data.fundUserInfoVo
   fundProjectVo.value = res.data.data.fundProjectVo
   fundScholarshipVo.value = res.data.data.fundScholarshipVo
   fundPunishVo.value = res.data.data.fundPunishVo
+  // 更新总记录数
+  totalNum.value = fundProjectVo.value.length;
+  totalNum2.value = fundPunishVo.value.length;
+  totalNum3.value = fundScholarshipVo.value.length;
+  // 重置页码
+  currentPage.value = 1;
+  currentPage2.value = 1;
+  currentPage3.value = 1;
   visible.value = true
 }
 
@@ -285,6 +284,83 @@ const fundScholarshipVo = ref([])
 // 社会经历
 const fundProjectVo = ref([])
 const visible = ref(false)
+
+// 分页器相关变量
+const currentPage = ref(1); // 当前页码
+const totalNum = ref(0); // 总记录数
+const currentPage2 = ref(1); // 第二个分页器的当前页码
+const totalNum2 = ref(0); // 第二个分页器的总记录数
+const currentPage3 = ref(1); // 第三个分页器的当前页码
+const totalNum3 = ref(0); // 第三个分页器的总记录数
+
+// 定义分页器的每页显示条数
+const pageSize = ref(8);
+
+// 加载状态
+const loadingStates = ref({
+  project: false,
+  punish: false,
+  scholarship: false
+});
+
+// 修改表格数据为计算属性，实现前端分页
+const paginatedProjectVo = computed(() => {
+  const start = (currentPage.value - 1) * 6;
+  return fundProjectVo.value.slice(start, start + 6);
+});
+
+const paginatedPunishVo = computed(() => {
+  const start = (currentPage2.value - 1) * 6;
+  return fundPunishVo.value.slice(start, start + 6);
+});
+
+const paginatedScholarshipVo = computed(() => {
+  const start = (currentPage3.value - 1) * 6;
+  return fundScholarshipVo.value.slice(start, start + 6);
+});
+
+// 定义分页器的页码变化处理函数（带错误处理）
+const handlePageChange = async (val: number) => {
+  try {
+    loadingStates.value.project = true;
+    currentPage.value = val;
+    // 这里可以添加额外的数据获取逻辑（如果是后端分页）
+    console.log('当前页码（社会经历）:', val);
+  } catch (error) {
+    console.error('页码切换失败:', error);
+    ElMessage.error('加载社会经历数据失败');
+  } finally {
+    loadingStates.value.project = false;
+  }
+};
+
+const handlePageChange2 = async (val: number) => {
+  try {
+    loadingStates.value.punish = true;
+    currentPage2.value = val;
+    // 这里可以添加额外的数据获取逻辑（如果是后端分页）
+    console.log('当前页码（个人处分）:', val);
+  } catch (error) {
+    console.error('页码切换失败:', error);
+    ElMessage.error('加载处分数据失败');
+  } finally {
+    loadingStates.value.punish = false;
+  }
+};
+
+const handlePageChange3 = async (val: number) => {
+  try {
+    loadingStates.value.scholarship = true;
+    currentPage3.value = val;
+    // 这里可以添加额外的数据获取逻辑（如果是后端分页）
+    console.log('当前页码（个人奖励）:', val);
+  } catch (error) {
+    console.error('页码切换失败:', error);
+    ElMessage.error('加载奖励数据失败');
+  } finally {
+    loadingStates.value.scholarship = false;
+  }
+};
 
 // 生日
 const formatBirthday = (birthday: string): string => {
@@ -800,5 +876,13 @@ const formatEthnicity = (code: string): string => {
 
 .custom-descriptions .el-descriptions__label {
   width: 200px;
+}
+
+#pagenation3 {
+  bottom: 1.5vh;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 </style>

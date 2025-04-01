@@ -112,7 +112,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref ,onMounted, computed} from 'vue'
+import { ref ,onMounted, computed,watch} from 'vue'
 import { ElMessage } from 'element-plus' // 导入 ElMessage 组件
 import axios from 'axios' // 导入 axios 库
 import { useRouter} from 'vue-router'
@@ -138,6 +138,9 @@ onMounted(() => {
   window.addEventListener('resize', () => {
     isMobile.value = window.innerWidth <= 768;
   });
+  if (!localStorage.getItem('token')) {
+    window.location.href = 'http://localhost:5173/'
+}
 });
 
 // // 点击菜单项时的处理函数
@@ -180,18 +183,28 @@ const handleLogout = async () => {
     ElMessage.error('请求失败！')
   }
 }
-// 登录状态判断，否则跳转登录页
-if (!localStorage.getItem('token')) {
-  router.push('/')
-}
+// 实时登录状态判断，否则跳转登录页
+
 // 页面关闭删除token
 import { onBeforeUnmount } from 'vue'
+// import { watch } from 'fs'
 // onBeforeUnmount(() => {
 //   localStorage.removeItem('token')
 //   localStorage.removeItem('client_id')
 //   localStorage.removeItem('role')
 //   console.log('Token has been removed from localStorage')
 // })
+// const isLoggedIn = ref(localStorage.getItem('isLoggedIn') === 'true');  // 可以根据你的存储方式修改
+// // 监听登录状态变化，如果未登录，跳转到登录页
+// watch(isLoggedIn, (newStatus) => {
+//   if (!newStatus) {
+//     router.push('/');  // 跳转到登录页面
+//   }
+// });
+// if (!isLoggedIn.value) {
+//   router.push('/');
+// }
+
 </script>
 
 <style scoped>

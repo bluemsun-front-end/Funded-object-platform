@@ -26,36 +26,7 @@ export const useCartStore = defineStore('cartStore', () => {
         Axios.get('http://106.54.24.243:8080/market/cart/list')
         .then(function (response) { 
             console.log('getItem', response.data.data);
-            // 处理可能的重复项
-            const cartData = response.data.data || [];
-            if (cartData.length > 0) {
-                // 使用Map按goodsId分组，合并相同商品
-                const groupedItems = new Map();
-                
-                cartData.forEach((item: any) => {
-                    if (groupedItems.has(item.goodsId)) {
-                        // 如果已存在该商品，合并数量
-                        const existingItem = groupedItems.get(item.goodsId);
-                        existingItem.num += item.num;
-                        
-                        // 确保数量不超过库存限制
-                        if (existingItem.num > existingItem.limitNum) {
-                            existingItem.num = existingItem.limitNum;
-                        }
-                        
-                        groupedItems.set(item.goodsId, existingItem);
-                    } else {
-                        // 添加新商品
-                        groupedItems.set(item.goodsId, {...item});
-                    }
-                });
-                
-                // 将Map转回数组
-                cartItems.value = Array.from(groupedItems.values());
-            } else {
-                cartItems.value = [];
-            }
-            
+            cartItems.value = response.data.data;
             filteredItems.value = [...cartItems.value];
         })
         .catch(function (error) {
@@ -91,58 +62,22 @@ export const useCartStore = defineStore('cartStore', () => {
     });
 
     // 移除选中的商品
-    const removeSelectedItems = async (itemId: any, callback?: Function) => {
+    const removeSelectedItems = async (itemId: any) => {
         var removeItem = { ids: [itemId] };
         try {
-            // 先向用户显示正在处理
-            ElMessage.info({
-                message: '正在移除商品...',
-                duration: 1000
-            });
-            
             const response = await Axios.delete(`http://106.54.24.243:8080/market/cart/${removeItem.ids.join(',')}`);
         
+    
             if (response.data.code == 200) {
-                // 更新本地数据
                 cartItems.value = cartItems.value.filter((item: { goodsId: any; }) => item.goodsId !== itemId);
                 filteredItems.value = filteredItems.value.filter((item: { goodsId: any; }) => item.goodsId !== itemId);
-                
-                // 从选中列表中移除该商品
-                if (selectedItems.value.includes(itemId)) {
-                    selectedItems.value = selectedItems.value.filter((id: any) => id !== itemId);
-                }
-                
-                ElMessage.success({
-                    message: '商品已成功移除',
-                    duration: 2000
-                });
-                
-                // 如果有回调函数，则执行
-                if (callback && typeof callback === 'function') {
-                    callback(true);
-                }
+                ElMessage.success('选中商品删除成功');
             } else {
-                ElMessage.warning({
-                    message: '删除商品失败，请稍后重试！',
-                    duration: 3000
-                });
-                
-                // 如果有回调函数，则执行
-                if (callback && typeof callback === 'function') {
-                    callback(false);
-                }
+                ElMessage.warning('删除商品失败，请稍后重试！');
             }
         } catch (error) {
             console.error('删除商品时出错:', error);
-            ElMessage.error({
-                message: '删除商品时出现错误！',
-                duration: 3000
-            });
-            
-            // 如果有回调函数，则执行
-            if (callback && typeof callback === 'function') {
-                callback(false);
-            }
+            ElMessage.error('删除商品时出现错误！');
         }
     };
 
@@ -232,23 +167,6 @@ const updateItemQuantity = async (itemId: number, newQuantity: number) => {
         if (!item) {
             ElMessage.warning('商品不存在');
             return;
-        }
-
-        // 首先获取最新的商品库存信息
-        try {
-            const stockResponse = await Axios.get(`http://106.54.24.243:8080/market/goods/${item.goodsId}`);
-            if (stockResponse.data.code === 200 && stockResponse.data.data) {
-                const currentStock = stockResponse.data.data.amount;
-                
-                // 检查请求的数量是否超过最新库存
-                if (newQuantity > currentStock) {
-                    ElMessage.warning(`商品库存不足，最多只能添加${currentStock}个`);
-                    newQuantity = currentStock;
-                    item.limitNum = currentStock; // 更新本地限制
-                }
-            }
-        } catch (error) {
-            console.error('获取最新库存信息失败:', error);
         }
 
         // 请求体结构

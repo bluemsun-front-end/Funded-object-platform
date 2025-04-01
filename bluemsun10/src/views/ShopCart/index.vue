@@ -41,10 +41,10 @@
                     v-model="item.num"
                     :min="1"
                     :max="item.limitNum"
-                    @change="(value) => throttledQuantityChange(item, value)"
+                    @change="(value) => handleQuantityChange(item, value)"
                     class="quantity-input"
                   />
-                  <el-button type="danger" @click="showRemoveConfirmation(item.goodsId)" class="remove">移除</el-button>
+                  <el-button type="danger" @click="removeSelectedItems(item.goodsId)" class="remove">移除</el-button>
                 </div>
               </div>
             </div>
@@ -113,26 +113,6 @@
                 </div>
               </template>
             </el-dialog>
-
-            <!-- 确认移除对话框 -->
-            <el-dialog
-              v-model="removeConfirmVisible"
-              title="确认移除"
-              width="400px"
-              class="checkout-dialog"
-              :close-on-click-modal="false"
-              :close-on-press-escape="false"
-            >
-              <div class="remove-confirm-content">
-                <p>确定要从购物车中移除商品 "{{ itemToRemoveName }}" 吗？</p>
-              </div>
-              <template #footer>
-                <div class="dialog-footer">
-                  <el-button @click="cancelRemove">取消</el-button>
-                  <el-button type="danger" @click="confirmRemove">确认移除</el-button>
-                </div>
-              </template>
-            </el-dialog>
           </div>
       </div>
     </div>
@@ -143,9 +123,8 @@
   import NavBar from '@/components/NavBar/index.vue'
   import { useCartStore } from '@/stores/cartStore';
   import { storeToRefs } from 'pinia';
-  import { onMounted, ref, onBeforeMount } from 'vue';
+  import { onMounted } from 'vue';
   import isLogin from '@/api/isLogin'
-  import { ElMessage, ElLoading } from 'element-plus';
 
   const cartStore = useCartStore();
   const { 
@@ -171,158 +150,18 @@
     toHome
   } = cartStore;
 
-  // 节流函数实现
-  const throttle = (fn, delay) => {
-    let timer = null;
-    let lastTime = 0;
-    
-    return function(...args) {
-      const now = Date.now();
-      const remaining = delay - (now - lastTime);
-      
-      if (remaining <= 0) {
-        if (timer) {
-          clearTimeout(timer);
-          timer = null;
-        }
-        lastTime = now;
-        fn.apply(this, args);
-      } else if (!timer) {
-        timer = setTimeout(() => {
-          lastTime = Date.now();
-          fn.apply(this, args);
-          timer = null;
-        }, remaining);
-      }
-    };
-  };
-
-  // 移除商品的确认对话框
-  const removeConfirmVisible = ref(false);
-  const itemToRemove = ref(null);
-  const itemToRemoveName = ref('');
-
-  // 显示移除确认对话框
-  const showRemoveConfirmation = (goodsId) => {
-    itemToRemove.value = goodsId;
-    itemToRemoveName.value = filteredItems.value.find(item => item.goodsId === goodsId)?.goodsName || '';
-    removeConfirmVisible.value = true;
-  };
-
-  // 确认移除
-  const confirmRemove = () => {
-    if (itemToRemove.value) {
-      // 显示加载状态
-      const loading = ElLoading.service({
-        lock: true,
-        text: '正在移除商品...',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
-      
-      // 调用store的移除方法，传入回调函数
-      removeSelectedItems(itemToRemove.value, (success) => {
-        loading.close();
-        if (success) {
-          // 移除成功
-          removeConfirmVisible.value = false;
-          itemToRemove.value = null;
-          itemToRemoveName.value = '';
-        } else {
-          // 移除失败，保持对话框打开，用户可以重试或取消
-          ElMessage.error({
-            message: '移除商品失败，请重试',
-            duration: 3000
-          });
-        }
-      });
-    }
-  };
-
-  // 取消移除
-  const cancelRemove = () => {
-    removeConfirmVisible.value = false;
-    itemToRemove.value = null;
-    itemToRemoveName.value = '';
-  };
-
-  // 使用节流函数包装handleQuantityChange
-  const handleQuantityChange = (item, value) => {
-    // 如果输入的数量超过库存限制，立即处理并显示警告
-    if (value > item.limitNum) {
-      value = item.limitNum;
-      item.num = item.limitNum;
-      ElMessage.warning({
-        message: `商品"${item.goodsName}"的数量不能超过库存上限(${item.limitNum})`,
-        duration: 3000,
-        showClose: true,
-        type: 'warning'
-      });
-    }
-    
-    updateSelectedTotalPrice(); // 更新总价
-    cartStore.updateItemQuantity(item.goodsId, value); // 调用 Pinia 方法更新数量
-  };
-
-  // 应用节流处理，设置300ms的延迟
-  const throttledQuantityChange = throttle(handleQuantityChange, 300);
-
-  // 预加载关键字体
-  const preloadFonts = () => {
-    const fontFamilies = [
-      "-apple-system", 
-      "BlinkMacSystemFont", 
-      "Segoe UI", 
-      "Roboto", 
-      "Helvetica Neue", 
-      "Arial"
-    ];
-    
-    // 创建一个不可见的div来预加载字体
-    const preloadDiv = document.createElement('div');
-    preloadDiv.style.opacity = '0';
-    preloadDiv.style.position = 'absolute';
-    preloadDiv.style.pointerEvents = 'none';
-    preloadDiv.style.left = '-9999px';
-    preloadDiv.style.top = '-9999px';
-    preloadDiv.style.width = '0';
-    preloadDiv.style.height = '0';
-    
-    // 对每个字体创建文本节点
-    fontFamilies.forEach(font => {
-      const span = document.createElement('span');
-      span.style.fontFamily = font;
-      span.textContent = "预加载字体";
-      preloadDiv.appendChild(span);
-    });
-    
-    // 添加到body中然后立即移除
-    document.body.appendChild(preloadDiv);
-    setTimeout(() => {
-      document.body.removeChild(preloadDiv);
-    }, 100);
-  };
-
-  onBeforeMount(() => {
-    preloadFonts();
-  });
-
   onMounted(() => {
     console.log('开始挂载')
-    // 在组件挂载时获取购物车信息和用户余额
     getItem();
     getCurrency();
-    isLogin();
-    
-    // 定期刷新购物车列表，确保数据同步
-    const refreshInterval = setInterval(() => {
-      getItem();
-    }, 10000); // 每10秒刷新一次
-    
-    // 组件卸载时清除定时器
-    return () => {
-      clearInterval(refreshInterval);
-    };
+    isLogin();  
   });  
+
+
+  const handleQuantityChange = (item, value) => {
+  cartStore.updateSelectedTotalPrice(); // 更新总价
+  cartStore.updateItemQuantity(item.goodsId, value); // 调用 Pinia 方法更新数量
+};
 
   // 确保全选功能正常
   const handleSelectAll = (val) => {
@@ -337,35 +176,6 @@
 
 
 <style lang="css" scoped>
-/* 字体预加载与稳定性设置 */
-@font-face {
-  font-family: "system-ui";
-  src: local("-apple-system"), local("BlinkMacSystemFont"), local("Segoe UI"),
-       local("Roboto"), local("Helvetica Neue"), local("Arial");
-  font-display: swap;
-  size-adjust: 100%;
-  ascent-override: 90%;
-  descent-override: 10%;
-}
-
-:root {
-  font-family: "system-ui", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
-    "Helvetica Neue", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* 关键内容预留空间防止布局偏移 */
-h3, p, span {
-  margin: 0;
-  padding: 0;
-}
-
-/* 为各种尺寸设置固定比例 */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
 /* 整体页面样式 */
 .cart-card {
   border-radius: 16px;
@@ -374,11 +184,9 @@ h3, p, span {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   margin: 24px auto;
   justify-content: center;
-  background-color: #f5f5f7;
+  background-color: #f5f5f7; /* Apple风格背景色 */
   color: #1d1d1f;
   max-width: 1200px;
-  min-height: 200px; /* 保持最小高度 */
-  overflow: hidden; /* 防止内容溢出 */
 }
 
 /* 顶部容器 */
@@ -436,17 +244,15 @@ h3, p, span {
 .item-card {
   width: 100%;
   max-width: 1000px;
-  height: 180px; /* 固定高度而非最小高度 */
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
   background-color: #ffffff;
   border: 1px solid #f0f0f0;
-  margin-bottom: 16px;
-  box-sizing: border-box;
-  overflow: hidden; /* 防止内容溢出导致布局变化 */
 }
 
 /* 商品卡片选中状态 */
@@ -470,8 +276,6 @@ h3, p, span {
 .item-image-container {
   width: 130px;
   height: 130px;
-  flex-shrink: 0; /* 防止压缩 */
-  flex-grow: 0; /* 防止拉伸 */
   margin-right: 32px;
   display: flex;
   justify-content: center;
@@ -485,6 +289,7 @@ h3, p, span {
   width: 85%;
   height: 85%;
   object-fit: contain;
+  transition: transform 0.4s ease;
 }
 
 .item-image-container:hover .item-image {
@@ -497,17 +302,12 @@ h3, p, span {
   flex: 1;
   justify-content: space-between;
   align-items: center;
-  min-width: 0;
-  height: 100%; /* 确保高度一致 */
 }
 
 .item-details {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-width: 0;
-  flex: 1;
-  height: 100%; /* 确保高度一致 */
 }
 
 .item-actions {
@@ -515,44 +315,40 @@ h3, p, span {
   flex-direction: column;
   gap: 20px;
   align-items: flex-end;
-  width: 120px; /* 固定宽度 */
-  flex-shrink: 0; /* 防止压缩 */
 }
 
 /* 商品名称样式 */
 .item-name {
   font-size: 17px;
+  font-weight: 600;
+  color: #1d1d1f; /* Apple风格文字颜色 */
+  letter-spacing: 0.3px;
   line-height: 1.3;
-  height: 22px; /* 固定高度 */
-  max-width: 100%;
+  max-width: 300px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: 600;
-  color: #1d1d1f;
+  margin: 0;
 }
 
 /* 商品价格样式 */
 .item-price {
   font-size: 24px;
   font-weight: 500;
+  color: #000000; /* Nike风格黑色 */
   margin: 4px 0 8px 0;
-  height: 30px; /* 固定高度 */
-  color: #000000;
-  line-height: 1.2;
 }
 
 /* 货币类型标签 */
 .currency-type {
   font-size: 13px;
-  color: #6e6e73;
+  color: #6e6e73; /* Apple风格次要文字颜色 */
   background-color: #f5f5f7;
   border-radius: 20px;
   padding: 6px 14px;
   display: inline-block;
   font-weight: 500;
-  height: 28px; /* 固定高度 */
-  line-height: 16px; /* 垂直居中文本 */
+  letter-spacing: 0.2px;
 }
 
 /* 数量选择器 */
@@ -574,21 +370,22 @@ h3, p, span {
   border-color: #e5e5e5;
 }
 
+.quantity-input {
+  width: 120px;
+  margin-bottom: 15px;
+}
+
 /* 移除按钮 */
 .remove {
-  width: 70px; /* 固定宽度 */
-  height: 36px; /* 固定高度 */
   color: white;
   font-size: 14px;
   border-radius: 24px;
-  padding: 8px 16px;
-  background: #000000;
+  padding: 10px 20px;
+  background: #000000; /* Nike风格黑色 */
   border: none;
+  letter-spacing: 0.5px;
   font-weight: 500;
   transition: all 0.3s ease;
-  white-space: nowrap;
-  text-align: center;
-  line-height: 20px; /* 垂直居中文本 */
 }
 
 .remove:hover {
@@ -596,7 +393,7 @@ h3, p, span {
   transform: translateY(-2px);
 }
 
-/* 底部结算区域 */
+/* 底部结算区域布局调整 */
 .foot {
   display: flex;
   align-items: center;
@@ -607,7 +404,6 @@ h3, p, span {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 1020px;
-  height: 80px; /* 固定高度而非最小高度 */
   margin-left: auto;
   margin-right: auto;
 }
@@ -635,23 +431,19 @@ h3, p, span {
   padding-left: 0; /* 移除左侧内边距 */
 }
 
-/* 货币信息样式 */
+/* 货币信息样式调整 */
 .currency-info {
   display: flex;
   flex-direction: row;
-  gap: 15px;
+  gap: 15px; /* 减小间距 */
   align-items: center;
-  justify-content: flex-end;
-  height: 24px; /* 固定高度 */
+  justify-content: flex-end; /* 确保内容靠右 */
 }
 
 .currency-info span {
   font-size: 16px;
   font-weight: 600;
   color: #1d1d1f;
-  white-space: nowrap;
-  height: 24px; /* 固定高度 */
-  line-height: 24px; /* 垂直居中文本 */
 }
 
 /* 全选选择框样式 */
@@ -678,18 +470,15 @@ h3, p, span {
 
 /* 恢复结算按钮原样式并增大 */
 .checkout-button {
-  width: 160px; /* 固定宽度 */
-  height: 52px; /* 固定高度 */
   background: #000000;
   color: #fff;
-  font-size: 20px;
-  padding: 0 16px;
+  transition: all 0.3s;
+  font-size: 20px; /* 更大的字体 */
+  padding: 16px 45px; /* 更大的内边距 */
   border-radius: 30px;
   border: none;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-weight: 600; /* 更粗的字体 */
+  letter-spacing: 0.7px;
 }
 
 .checkout-button:hover {
@@ -712,18 +501,20 @@ h3, p, span {
   align-items: center;
   justify-content: center;
   padding: 80px 40px;
+  color: #1d1d1f;
+  text-align: center;
   background-color: #ffffff;
   border-radius: 20px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   margin: 40px 0;
-  height: 400px; /* 固定高度而非最小高度 */
 }
 
 .empty-cart-image {
   width: 150px;
-  height: 150px; /* 固定高度 */
+  height: auto;
   margin-bottom: 40px;
   opacity: 0.8;
+  animation: float 5s ease-in-out infinite;
 }
 
 .empty-cart-text {
@@ -731,8 +522,7 @@ h3, p, span {
   font-weight: 600;
   color: #1d1d1f;
   margin-bottom: 30px;
-  height: 36px; /* 固定高度 */
-  line-height: 36px; /* 垂直居中文本 */
+  letter-spacing: 0.5px;
 }
 
 .empty-cart-button {
@@ -838,17 +628,6 @@ h3, p, span {
   border-color: #333333;
 }
 
-/* 确认移除对话框样式 */
-.remove-confirm-content {
-  padding: 10px 0;
-  text-align: center;
-}
-
-.remove-confirm-content p {
-  font-size: 16px;
-  color: #1d1d1f;
-}
-
 /* 优雅的动画效果 */
 @keyframes float {
   0%, 100% {
@@ -870,17 +649,5 @@ h3, p, span {
 .choose :deep(.el-checkbox__input) {
   z-index: 2;
   pointer-events: auto;
-}
-
-/* 确保所有文本元素有固定行高 */
-.el-text {
-  line-height: 1.4;
-  display: block;
-}
-
-.quantity-input {
-  width: 120px;
-  height: 36px; /* 固定高度 */
-  margin-bottom: 15px;
 }
 </style>

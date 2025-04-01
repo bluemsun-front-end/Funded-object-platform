@@ -15,7 +15,6 @@
     "amfe-flexible": "^2.2.1",
     "axios": "^1.8.4",
     "element-plus": "^2.9.7",
-    "lodash-es": "^4.17.21",
     "pinia": "^2.2.4",
     "postcss-pxtorem": "^6.1.0",
     "vue": "^3.5.13",
@@ -24,7 +23,6 @@
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
-    "@types/lodash-es": "^4.17.6",
     "@types/node": "^20.16.11",
     "@vitejs/plugin-vue": "^5.1.4",
     "@vitejs/plugin-vue-jsx": "^4.0.1",

@@ -1,5 +1,3 @@
-
-
 import axios from 'axios';
 
 // 创建一个 axios 实例
@@ -18,50 +16,41 @@ let isPc: boolean = true;
 
 // 定义一个函数来判断是否是电脑端
 const isPC = (): void => {
-  const userAgent = navigator.userAgent
-
-  // 定义一些常见的移动设备和浏览器的用户代理特征
-  const mobileAgents: RegExp[] = [
-    /android/i,     // Android设备
-    /iphone|ipad|ipod/i, // iOS设备
-    /windows phone/i, // Windows Phone设备
-    /blackberry/i,  // Blackberry设备
-    /opera mini/i,  // Opera Mini浏览器（通常用于移动设备）
-    /mobile/i,      // 通用移动设备标记
-    /touch/i        // 触摸设备标记（可能包括桌面触摸屏）
-  ];
-
-  // 初始化isPc为true
-  isPc = true;
-
-  // 检查用户代理字符串是否包含任何移动设备的特征
-  for (let i = 0; i < mobileAgents.length; i++) {
-    if (mobileAgents[i].test(userAgent)) {
-      isPc = false; // 如果是移动设备，则将isPc设置为false
-    }
-  }
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
+  isPc = !isMobile;
+  
+  // 添加调试日志
+  console.log('Current UserAgent:', userAgent);
+  console.log('Is Mobile Device:', isMobile);
+  console.log('Selected ClientId:', isMobile ? "428a8310cd442757ae699df5d894f051" : "e5cd7e4891bf95d1d19206ce24a7b32e");
 };
 
-// 在组件挂载时调用isPC函数
+// 在组件挂载时调用isPC函数，并添加resize事件监听
 onMounted(() => {
   isPC();
+  window.addEventListener('resize', isPC);  // 在窗口大小改变时重新检测
 });
 
 
 // 请求拦截器：在请求发送之前附加 Authorization 头
 instance.interceptors.request.use(
   config => {
-    if (isPc === false) {
-      clientId.value = "428a8310cd442757ae699df5d894f051"
+    // 每次请求前重新判断设备类型
+    isPC();
+    
+    // 根据设备类型设置clientId
+    if (!isPc) {
+      clientId.value = "428a8310cd442757ae699df5d894f051"  // 移动端clientId
     } else {
-      clientId.value = "e5cd7e4891bf95d1d19206ce24a7b32e"
+      clientId.value = "e5cd7e4891bf95d1d19206ce24a7b32e"  // PC端clientId
     }
-    const token = localStorage.getItem('token'); // 获取 token
+
+    const token = localStorage.getItem('token');
     if (token) {
-      // 如果存在 token，则将 token 添加到 Authorization 头中
       config.headers['Authorization'] = `Bearer ${token}`;
       config.headers['Content-Type'] = 'application/json';
-      config.headers["clientid"] = clientId.value
+      config.headers["clientid"] = clientId.value;
     }
     return config;
   },

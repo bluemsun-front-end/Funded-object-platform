@@ -135,16 +135,16 @@ const toggleSidebar = () => {
   sidebarVisible.value = !sidebarVisible.value;
 };
 
-onMounted(() => {
-  window.addEventListener('resize', () => {
-    isMobile.value = window.innerWidth <= 768;
-  });
-});
 // 登录状态判断，否则跳转登录页
 onMounted(async () => {
   const isLoggedIn = await isLogin()
   if (!isLoggedIn) {
     router.push('/')
+  }
+  else{
+    window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth <= 768;
+  });
   }
 })
 // // 点击菜单项时的处理函数

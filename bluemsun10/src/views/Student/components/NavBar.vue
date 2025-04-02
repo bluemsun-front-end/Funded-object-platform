@@ -1,27 +1,20 @@
 <template>
   <div class="header">
     <h1 class="title">个人成长档案</h1>
-    <button class="exit-btn" @click="centerDialogVisible = true">返回</button>
-    <el-dialog v-model="centerDialogVisible" title="确认返回吗？" width="370" center align-center>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="centerDialogVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleLogout()">
-              确认
-            </el-button>
-          </div>
-        </template>
-    </el-dialog>
+    <button class="exit-btn" @click="goToFramework">返回</button>
+
   </div>
 </template>
 
 <script setup>
 import Axios from '@/views/Axios'
-import {ref} from 'vue';
+import { ref } from 'vue';
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 const router = useRouter()
-const centerDialogVisible = ref(false);
+const goToFramework = () => {
+  router.push('/framework')
+}
 const handleLogout = async () => {
   console.log('退出登录')
   try {
@@ -41,7 +34,7 @@ const handleLogout = async () => {
     } else {
       ElMessage.error(response.data.msg + '!')
     }
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
     ElMessage.error('请求失败！')
   }

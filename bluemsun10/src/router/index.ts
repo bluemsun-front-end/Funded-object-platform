@@ -133,7 +133,7 @@ const router = createRouter({
         {
             path: '/studentFiles',
             name: 'studentFiles',
-            component: import('@/views/Student/index.vue'),
+            component: () =>  import('@/views/Student/index.vue'),
             meta: { role: ['老师', '超级管理员'] }
         },
     ]

@@ -56,4 +56,10 @@ const onSearch = () => {
 .search-button:hover {
   background-color: rgb(51.2, 126.4, 204); 
 }
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .search-input {
+    width: 55vw;
+  }
+}
 </style>

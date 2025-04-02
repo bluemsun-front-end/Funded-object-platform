@@ -134,5 +134,12 @@ watch(isasc, (newVal) => {
   display: flex;
   margin-top: 20px;
 }
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .center-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
 
 </style>

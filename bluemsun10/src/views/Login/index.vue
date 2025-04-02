@@ -241,13 +241,13 @@ input[type='text']:focus {
   justify-content: center;
 }
 .container1{
-   background: url(./../../../image/pc登录背景.png) no-repeat;
+   background: url(./../../../image/pc登录背景.jpg) no-repeat;
    background-size: cover;
    width: 100vw;
   height: 100vh;
 }
 .container2{
-   background: url(./../../../image/mobile登录背景.png) fixed no-repeat;
+   background: url(./../../../image/mobile登录背景.jpg) fixed no-repeat;
    background-size: cover;
    width: 100vw;
   height: 100vh;

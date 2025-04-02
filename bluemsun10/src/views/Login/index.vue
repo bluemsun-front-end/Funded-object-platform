@@ -79,7 +79,11 @@ onMounted(async () => {
   if (token && role) {
     router.push('/framework')
   }
-
+  if(savedPassword&&savedUsername){
+    uname.value=savedUsername
+    password.value=savedPassword
+    remenber.value=true
+  }
   // 检查登录状态
   const isLoggedIn = await isLogin()
   if (!isLoggedIn) {

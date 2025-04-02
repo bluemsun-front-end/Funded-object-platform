@@ -186,7 +186,7 @@
   import {ElMessage} from 'element-plus';
   import type { ComponentSize, FormInstance, FormRules, UploadInstance  } from 'element-plus'
   import Axios from '../Axios/index';
-  import axios from 'axios';
+  // import axios from 'axios';
   const name = ref('(*^▽^*)');
   const price = ref();
   const currencyType = ref('1');
@@ -604,11 +604,7 @@
   }
   const addFile = async (formData) => {
     try {
-    const authToken=localStorage.getItem('token')
-    const clientId=localStorage.getItem('clientid')
-    axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`; 
-    axios.defaults.headers.common['clientId'] = clientId;
-      const response = await axios.post('http://106.54.24.243:8080/resource/oss/upload', formData);
+      const response = await Axios.post('http://106.54.24.243:8080/resource/oss/upload', formData);
       ruleForm.imageUrl=response.data.data.ossId
       getimag(ruleForm.imageUrl)
       if(response.data.code===200){

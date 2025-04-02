@@ -119,7 +119,6 @@ import { reactive, ref,watch } from 'vue';
 import Axios from '../Axios/index';
 import { onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import { fa } from 'element-plus/es/locale';
 import { ArrowDown, Orange } from '@element-plus/icons-vue'
 interface Order {
   id: string;

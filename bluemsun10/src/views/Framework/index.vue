@@ -119,6 +119,7 @@ import { useRouter} from 'vue-router'
 import PersonalBox from '@/views/Framework/components/PersonalBox.vue' // 导入 PersonalBox 组件
 import PersonalText from '@/views/Framework/components/PersonalText.vue'
 import Axios from '@/views/Axios'
+import isLogin from '@/api/isLogin'
 const roleMessage = ref('资助对象')
 const router = useRouter()
 const token = localStorage.getItem('token')
@@ -138,10 +139,14 @@ onMounted(() => {
   window.addEventListener('resize', () => {
     isMobile.value = window.innerWidth <= 768;
   });
-  if (!localStorage.getItem('token')) {
-    window.location.href = 'http://localhost:5173/'
-}
 });
+// 登录状态判断，否则跳转登录页
+onMounted(async () => {
+  const isLoggedIn = await isLogin()
+  if (!isLoggedIn) {
+    router.push('/')
+  }
+})
 // // 点击菜单项时的处理函数
 const handleMenuClick = (page: string) => {
   if (page === 'superMarket') {
@@ -182,7 +187,6 @@ const handleLogout = async () => {
     ElMessage.error('请求失败！')
   }
 }
-// 实时登录状态判断，否则跳转登录页
 
 // 页面关闭删除token
 import { onBeforeUnmount } from 'vue'

@@ -137,10 +137,9 @@ const toggleSidebar = () => {
 
 // 登录状态判断，否则跳转登录页
 onMounted(async () => {
-  const isLoggedIn = await isLogin()
-  if (!isLoggedIn) {
+  if (!localStorage.getItem('token')) {
     router.push('/')
-  }
+}
   else{
     window.addEventListener('resize', () => {
     isMobile.value = window.innerWidth <= 768;
@@ -189,7 +188,7 @@ const handleLogout = async () => {
 }
 
 // 页面关闭删除token
-import { onBeforeUnmount } from 'vue'
+// import { onBeforeUnmount } from 'vue'
 // import { watch } from 'fs'
 // onBeforeUnmount(() => {
 //   localStorage.removeItem('token')

@@ -50,7 +50,7 @@ const router = useRouter();
 const authToken = localStorage.getItem('token');
 onMounted(() => {
   if (!localStorage.getItem('token')) {
-    window.location.href = 'http://localhost:5173/'
+    router.push('/')
 }
 });
 const token = `${authToken}`;

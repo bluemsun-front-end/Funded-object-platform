@@ -155,7 +155,8 @@ const navigateToIndex = (index: number) => {
 
 .hello {
   color: #409EFF;
-  font-family: ChillLongCangKaiShu_Bold;
+  font-family: 黑体;
+  font-weight: 700;
 }
 
 
@@ -166,7 +167,7 @@ const navigateToIndex = (index: number) => {
 }
 .campus{
   font-size: 20px;
-  font-family: ChillLongCangKaiShu_Bold;
+  font-family: 黑体;
 }
 
 .money span {
@@ -253,6 +254,7 @@ const navigateToIndex = (index: number) => {
     width: 100%;
     height: 2px;
     margin: 10px 0px;
+
   }
 
   .top_hello {
@@ -274,7 +276,7 @@ const navigateToIndex = (index: number) => {
 
   .right .icon-menu {
     cursor: pointer;
-    display: block;
+    display: none;
   }
 
 }
@@ -328,6 +330,7 @@ const navigateToIndex = (index: number) => {
   border-bottom: 4px solid #9ec8f3;
   /* 鼠标悬停时的样式 */
 }
+
 
 .demo-avatar {
   margin-right: 2vh;

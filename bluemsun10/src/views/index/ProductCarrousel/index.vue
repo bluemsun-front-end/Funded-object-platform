@@ -1,21 +1,3 @@
-<!-- <template>
-  <el-carousel :interval="4000" type="card" height="200px">
-    <el-carousel-item v-for="(item, index) in images" :key="index">
-      <div class="carousel-image" :style="{'background-image': `url(`+item+')'}"></div>
-    </el-carousel-item>
-  </el-carousel>
-</template>
-
-<script setup>
-import { ref } from 'vue';
-
-const images = ref([
-  'image/爱心超市1.png',
-  'image/爱心超市1.png',
-  'image/爱心超市1.png',
-  'image/爱心超市1.png',
-]);
-</script> -->
 <template>
   <el-carousel :interval="4000" type="card" height="200px">
     <el-carousel-item v-for="(item, index) in images" :key="index" @click="handleClick(item.link)">
@@ -28,10 +10,10 @@ const images = ref([
 import { ref } from 'vue';
 
 const images = ref([
-  { url: 'image/爱心超市4.png', link: 'https://www.nenu.edu.cn/' },
+  { url: 'image/爱心超市4.jpg', link: 'https://www.nenu.edu.cn/' },
   { url: 'image/爱心超市2.jpg', link: '#' },
-  { url: 'image/爱心超市1.png', link: 'https://clzc.nenu.edu.cn/' },
-  { url: 'image/爱心超市3.png', link: '#' },
+  { url: 'image/爱心超市1.jpg', link: 'https://clzc.nenu.edu.cn/' },
+  { url: 'image/爱心超市3.jpg', link: '#' },
   
 ]);
 

@@ -66,7 +66,7 @@ const handleReturn = () => {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     /* border-radius: 12px; */
-    height:3.5vh;
+    height:3.8vh;
 }
 
 .title {
@@ -247,5 +247,18 @@ const handleReturn = () => {
     position: absolute;
     text-align: center;
     width: 20px;
+}
+
+@media (min-width: 1300px) {
+.header-container {
+    height: 4.8vh; 
+    padding: 25px 30px; 
+}
+
+
+.title {
+    font-size: 26px;
+}
+
 }
 </style>

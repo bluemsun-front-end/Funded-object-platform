@@ -109,8 +109,15 @@
               </div>
               <template #footer>
                 <div class="dialog-footer">
-                  <el-button @click="checkoutInfo = false">取消</el-button>
-                  <el-button type="primary" @click="reCheckout">确认结算</el-button>
+                  <el-button @click="checkoutInfo = false" :disabled="isSettling">取消</el-button>
+                  <el-button 
+                    type="primary" 
+                    @click="reCheckout" 
+                    :loading="isSettling"
+                    :disabled="isSettling"
+                  >
+                    {{ isSettling ? '处理中...' : '确认结算' }}
+                  </el-button>
                 </div>
               </template>
             </el-dialog>
@@ -155,6 +162,7 @@
     dailyTotal,
     checkoutInfo,
     isAllSelected,
+    isSettling,
     router,
   } = storeToRefs(cartStore);
 
@@ -217,7 +225,7 @@
 
   // 使用节流函数包装handleQuantityChange
   const handleQuantityChange = (item, value) => {
-    // 如果输入的数量超过库存限制，立即处理并显示警告
+    // 检查输入的数量是否超过库存限制，本地进行限制
     if (value > item.limitNum) {
       value = item.limitNum;
       item.num = item.limitNum;
@@ -229,12 +237,15 @@
       });
     }
     
-    updateSelectedTotalPrice(); // 更新总价
-    cartStore.updateItemQuantity(item.goodsId, value); // 调用 Pinia 方法更新数量
+    // 更新总价（本地立即更新UI）
+    updateSelectedTotalPrice(); 
+    
+    // 调用 Pinia 方法更新数量（它会处理2秒内只发一次请求的逻辑）
+    cartStore.updateItemQuantity(item.goodsId, value); 
   };
 
-  // 应用节流处理，设置300ms的延迟
-  const throttledQuantityChange = throttle(handleQuantityChange, 300);
+  // 我们可以使用更短的节流时间，因为实际防抖逻辑已在store中实现
+  const throttledQuantityChange = throttle(handleQuantityChange, 100);
 
   onMounted(() => {
     console.log('开始挂载')

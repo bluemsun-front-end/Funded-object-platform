@@ -120,6 +120,7 @@ import PersonalBox from '@/views/Framework/components/PersonalBox.vue'
 import PersonalText from '@/views/Framework/components/PersonalText.vue'
 import Axios from '@/views/Axios'
 import isLogin from '@/api/isLogin'
+import { log } from 'console'
 const roleMessage = ref('资助对象')
 const router = useRouter()
 const token = localStorage.getItem('token')
@@ -138,6 +139,7 @@ const toggleSidebar = () => {
 // 登录状态判断，否则跳转登录页
 onMounted(async () => {
   if (!localStorage.getItem('token')) {
+    console.log('未登录')
     router.push('/')
 }
   else{
@@ -172,8 +174,6 @@ const handleLogout = async () => {
       localStorage.removeItem('token')
       localStorage.removeItem('role')
       localStorage.removeItem('client_id')
-
-      // 等待2秒跳转到登录
       setTimeout(() => {
         router.push('/')
         outerVisible.value = false

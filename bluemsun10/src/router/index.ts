@@ -42,8 +42,6 @@ const router = createRouter({
             component: ShopCart,
             meta: { role: ['资助对象'] }
         },
-
-
         {
             name: 'OrderList',
             path: '/orderList',

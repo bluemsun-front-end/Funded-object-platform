@@ -76,9 +76,7 @@ onMounted(async () => {
   setClientId()
   // 设置 container 类名，避免抖动
   container.value = isPc.value ? 'container container1' : 'container container2'
-  if (token && role) {
-    router.push('/framework')
-  }
+
   if(savedPassword&&savedUsername){
     uname.value=savedUsername
     password.value=savedPassword
@@ -89,6 +87,9 @@ onMounted(async () => {
   if (!isLoggedIn) {
     localStorage.removeItem('role')
     localStorage.removeItem('token')
+  }
+  if (localStorage.getItem('token') && localStorage.getItem('role')) {
+    router.push('/framework')
   }
 })
 

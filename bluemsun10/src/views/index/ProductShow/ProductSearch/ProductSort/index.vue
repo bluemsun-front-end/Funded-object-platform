@@ -6,9 +6,9 @@
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item command="">综合排序</el-dropdown-item>
-            <el-dropdown-item command="asc">价格升序排列</el-dropdown-item>
-            <el-dropdown-item command="desc">价格降序排序</el-dropdown-item>
+            <el-dropdown-item command="">综合</el-dropdown-item>
+            <el-dropdown-item command="asc">按价格升序</el-dropdown-item>
+            <el-dropdown-item command="desc">按价格降序</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

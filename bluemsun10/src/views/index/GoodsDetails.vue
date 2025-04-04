@@ -3,7 +3,7 @@
     <div class="modal-content">
       <div class="title">
         <h2 id="productName">商品详情</h2>
-       <span class="close" @click="close">&times;</span>
+        <span class="close" @click="close">&times;</span>
       </div>
       <div class="all-content">
         <img id="productImage" :src="productDetail.imageUrlUrl" alt="商品图片">
@@ -39,7 +39,6 @@
       </div>
     </div>
   </section>
- 
 </template>
 
 <script setup>
@@ -103,27 +102,33 @@ const addToCart = () => {
               else if(response.data.code === 200){
                 console.log('加入购物车成功', response);
                 ElMessage.success('加入购物车成功');
+                emit('close');
               }
               else if(response.data.code === 401){
                 ElMessage.error('认证失败');
+                emit('close');
               }
               else if(response.data.code === 403){
                 ElMessage.error('您没有此权限');
+                emit('close');
               }
             })
             .catch(error => {
               console.error('加入购物车失败', error);
               ElMessage.error('加入购物车失败');
+              emit('close');
             });
         }
       })
       .catch(error => {
         console.error('获取购物车信息失败', error);
         ElMessage.error('获取购物车信息失败');
+        emit('close');
       });
   } 
   else {
     ElMessage.error('库存不足，无法加入购物车');
+    emit('close');
   }
 };
 

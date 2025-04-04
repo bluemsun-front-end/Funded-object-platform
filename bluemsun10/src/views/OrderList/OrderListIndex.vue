@@ -235,7 +235,6 @@ onMounted(() => {
     clientId.value = "e5cd7e4891bf95d1d19206ce24a7b32e"
   }
   localStorage.setItem('clientid', clientId.value)
-  console.log(11111);
   getList();
 });
 

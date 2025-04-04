@@ -725,7 +725,6 @@ const saveEditInfo = async () => {
       };
       const response = await axios.post('http://106.54.24.243:8080/grow/userInfo/updateUserInfo', dataToSubmit);
       if (response.data.code === 200) {
-        console.log('信息更新成功');
         ElMessage.success('信息更新成功');
         await fetchStudentInfo();
         showEditDialog.value = false;
@@ -743,8 +742,6 @@ const saveEditInfo = async () => {
   //社会经历
   const addExperience = async () => {
     try {
-      console.log(newExperience.value.startDate);
-      console.log(newExperience.value.endDate);
       const response = await axios.post('http://106.54.24.243:8080/grow/project/addProject', {
         pageSize: 8,
         pageNum: pageNum,
@@ -753,7 +750,6 @@ const saveEditInfo = async () => {
         experience: newExperience.value.experience,
       });
       if (response.data.code === 200) {
-        console.log('Experience added successfully');
         ElMessage.success('社会经历添加成功');
         await fetchStudentInfo();
         showAddExperienceDialog.value = false;

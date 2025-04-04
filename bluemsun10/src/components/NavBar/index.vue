@@ -25,15 +25,6 @@
       </div>
       <div class="right">
         <el-button class="logout" type="primary" size="large" @click="centerDialogVisible = true">退出登录</el-button>
-        <el-row class="demo-avatar demo-basic">
-          <el-col :span="12">
-            <div class="demo-basic--circle">
-              <div class="block">
-                <el-avatar :size="65" :src="avatarUrl" />
-              </div>
-            </div>
-          </el-col>
-        </el-row>
         <button class="iconfont icon-menu" @click="toggleMenu"></button>
       </div>
       
@@ -90,7 +81,7 @@ const toggleMenu = () => {
 };
 
 const handleLogout = async () => {
-  console.log('退出登录');
+  //退出登录
   try {
     const response = await Axios.post('http://106.54.24.243:8080/auth/logout', {});
     if (response.data.code === 200) {
@@ -332,9 +323,7 @@ const navigateToIndex = (index: number) => {
 }
 
 
-.demo-avatar {
-  margin-right: 2vh;
-}
+
 
 .top_hello,
 .money,

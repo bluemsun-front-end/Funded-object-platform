@@ -13,6 +13,7 @@ export const useCartStore = defineStore('cartStore', () => {
     const checkoutInfo: any = ref(false);  // 用于控制弹窗的显示
     const isAllSelected: any = ref(false);
     const isSettling: any = ref(false);
+    const isLoading: any = ref(true);  // 添加加载状态变量，默认为加载中
 
     // 定义路由
     const router = useRouter(); 
@@ -24,6 +25,7 @@ export const useCartStore = defineStore('cartStore', () => {
 
     // 获取用户购物车商品
     async function getItem() {
+        isLoading.value = true; // 开始加载
         try {
             const response = await Axios.get('http://106.54.24.243:8080/market/cart/list');
             console.log('getItem', response.data.data);
@@ -81,6 +83,8 @@ export const useCartStore = defineStore('cartStore', () => {
             filteredItems.value = [...cartItems.value];
         } catch (error) {
             console.log(error);
+        } finally {
+            isLoading.value = false; // 无论成功与否，加载结束
         }
     }
 
@@ -167,7 +171,7 @@ export const useCartStore = defineStore('cartStore', () => {
         // 检查是否在防抖时间内
         const now = Date.now();
         if (now - lastSettleTime < settleDebounceInterval) {
-            console.log('防抖：忽略2秒内的重复结算请求');
+      
             return;
         }
 
@@ -368,7 +372,7 @@ export const useCartStore = defineStore('cartStore', () => {
 
             if (response.data.code === 200) {
                 // 显示成功提示消息
-                ElMessage.success('商品数量已更新');
+                
                 console.log('商品数量已同步到服务器');
             } else {
                 ElMessage.warning(response.data.msg || '更新商品数量失败，请稍后重试！');
@@ -389,6 +393,7 @@ export const useCartStore = defineStore('cartStore', () => {
         checkoutInfo,
         isAllSelected,
         isSettling,
+        isLoading,
         getItem,
         getCurrency,
         removeSelectedItems,

@@ -50,16 +50,33 @@
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination
-      background
-      layout="->, sizes, prev, pager, next, jumper, total"
-      v-model:current-page="query.pageNum"
-      v-model:page-size="query.pageSize"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :total="total"
-      class="my-pagination"
-    />
+    <div class="custom-pagination">
+        <span class="page-size-label">每页显示：</span>
+        <el-select 
+          v-model="query.pageSize" 
+          class="page-size-select"
+          @change="handleSizeChange"
+          :popper-append-to-body="false"
+        >
+          <el-option
+            v-for="size in pageSizes.filter(s => s !== query.pageSize)"
+            :key="size"
+            :label="`${size}`"
+            :value="size"
+          />
+        </el-select>
+        <span class="current-page-size">条/页</span>
+        <el-pagination
+          background
+          :page-size="query.pageSize"
+          :page-sizes="[]"
+          layout="->, prev, pager, next, jumper, total"
+          v-model:current-page="query.pageNum"
+          @current-change="handleCurrentChange"
+          :total="total"
+          class="my-pagination"
+        />
+      </div>
 
     <!-- 订单详情弹窗 -->
     <el-dialog v-model="visible" :title="`订单详情`" width="950" top="10vh" :close-on-click-modal="false">
@@ -71,12 +88,12 @@
             </template>
           </el-table-column>
           <el-table-column property="goodsName" label="商品名称" minWidth="200" />
-          <el-table-column property="amount" label="数量" minWidth="140" />
           <el-table-column property="currentType" label="消耗币类型" minWidth="140">
             <template #default="{ row }">
               {{ row.currentType === 0 ? '服装币' : '日常币' }}
             </template>
           </el-table-column>
+          <el-table-column property="amount" label="数量" minWidth="140" />
           <el-table-column property="price" label="消耗币" minWidth="150" />
         </el-table>
 
@@ -101,6 +118,9 @@ const query = ref({
   pageNum: 1,
   pageSize: 10,
 });
+
+// 添加分页选项
+const pageSizes = ref([10, 20, 30, 40, 50, 100]);
 const total = ref(17);
 const loadings = ref({
   table: false,
@@ -268,5 +288,28 @@ onMounted(() => {
 .total-num {
   margin: 10px 0;
   text-align: right;
+}
+
+.custom-pagination {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.page-size-label {
+  color: var(--el-text-color-regular);
+  margin-right: 8px;
+}
+
+.current-page-size {
+  color: var(--el-color-primary);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.page-size-select {
+  width: 110px;
+  margin-right: 16px;
 }
 </style>

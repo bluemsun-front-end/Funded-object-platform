@@ -252,7 +252,6 @@ const handleReturn = () => {
 @media (min-width: 1300px) {
 .header-container {
     height: 4.8vh; 
-    padding: 25px 30px; 
 }
 
 

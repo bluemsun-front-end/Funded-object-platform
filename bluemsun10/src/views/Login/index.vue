@@ -35,7 +35,7 @@
         </div>
         <input type="password" placeholder="密码" v-model="password" />
       </div>
-      <div class="remenber" style="margin-left:45%">
+      <div class="remenber" style="margin-left:45%;margin-top:-3%">
         <el-checkbox v-model="remenber" label="记住密码" size="large" fill="#f5f5f5" />
       </div>
       <div class="btn"><button class="log" @click.prevent="log">登录</button></div>
@@ -375,12 +375,12 @@ input:focus {
   border: none;
   outline: none;
   background-color: transparent;
-  padding: 10px;
+  padding-left: 10px;
 }
 
 .mobile .btn {
   width: 100%;
-  margin-top: 10%;
+  margin-top: 12%;
   text-align: center;
 }
 

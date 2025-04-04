@@ -276,7 +276,7 @@ const navigateToIndex = (index: number) => {
 
   .right .icon-menu {
     cursor: pointer;
-    display: none;
+     display: block;
   }
 
 }

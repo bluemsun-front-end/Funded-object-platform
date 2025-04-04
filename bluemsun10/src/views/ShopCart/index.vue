@@ -12,7 +12,8 @@
             </div>
           </div>
           
-          <div class="card-container">
+          <!-- 商品卡片容器，只在非加载状态且有商品时显示 -->
+          <div v-if="!isLoading && filteredItems.length > 0" class="card-container">
             <!-- 商品卡片 -->
             <div v-for="item in filteredItems" 
                  :key="item.goodsId" 
@@ -51,15 +52,23 @@
             </div>
           </div>
           
+          <!-- 购物车加载中状态 -->
+          <div v-if="isLoading" class="loading-cart">
+            <el-skeleton-item variant="circle" style="width: 100px; height: 100px; margin-bottom: 20px;" />
+            <el-skeleton-item variant="text" style="width: 240px; height: 30px;" />
+            <el-skeleton-item variant="text" style="width: 160px; height: 20px; margin-top: 20px;" />
+            <div class="loading-text">购物车加载中...</div>
+          </div>
+          
           <!-- 购物车为空的展示 -->
-          <div v-if="filteredItems.length === 0" class="empty-cart">
+          <div v-else-if="filteredItems.length === 0" class="empty-cart">
             <img src="../background/emptyCart.png" alt="空购物车" class="empty-cart-image">
             <p class="empty-cart-text">您的购物车是空的</p>
             <el-button type="primary" class="empty-cart-button" @click="toHome">继续购物</el-button>
           </div>
 
-          <!-- 底部结算区域重新设计 -->
-          <div class="foot">
+          <!-- 底部结算区域重新设计，只在非加载状态且有商品时显示 -->
+          <div v-if="!isLoading && filteredItems.length > 0" class="foot">
             <!-- 添加全选按钮到底部 -->
             <div class="foot-left">
               <el-checkbox 
@@ -164,6 +173,7 @@
     isAllSelected,
     isSettling,
     router,
+    isLoading,
   } = storeToRefs(cartStore);
 
   const { 
@@ -763,5 +773,54 @@
 .choose :deep(.el-checkbox__input) {
   z-index: 2;
   pointer-events: auto;
+}
+
+/* 加载中购物车样式 */
+.loading-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  color: #1d1d1f;
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  margin: 40px 0;
+}
+
+.loading-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #1d1d1f;
+  margin-top: 25px;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.loading-cart :deep(.el-skeleton-item) {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 </style>

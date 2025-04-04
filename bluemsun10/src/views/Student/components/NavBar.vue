@@ -16,7 +16,6 @@ const goToFramework = () => {
   router.push('/framework')
 }
 const handleLogout = async () => {
-  console.log('退出登录')
   try {
     const response = await Axios.post('http://106.54.24.243:8080/auth/logout', {
     })

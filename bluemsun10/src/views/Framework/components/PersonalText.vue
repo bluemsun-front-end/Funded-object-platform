@@ -83,7 +83,6 @@ const activeTab = ref(role === '资助对象' ? 'tab1' : 'tab2')
 /* Tab 内容区样式 */
 .text-content {
   border-radius: 10px;
-  /* box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); */
   margin-top: 2vh;
   height: 68vh;
   width: 45vw;
@@ -101,15 +100,15 @@ const activeTab = ref(role === '资助对象' ? 'tab1' : 'tab2')
   }
 
   :deep(.custom-tabs .el-tabs__header) {
-    height: 40px; /* 调整高度 */
+    height: 40px;
   }
 
   :deep(.custom-tabs .el-tabs__item) {
-    font-size: 12px; /* 进一步减小字体大小 */
-    height: 40px; /* 调整高度 */
+    font-size: 12px;
+    height: 40px;
   }
 
   .text-content {
-    height: auto; /* 自动高度 */
+    height: auto;
   }}
 </style>

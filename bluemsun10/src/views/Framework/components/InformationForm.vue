@@ -62,7 +62,7 @@
       </div>
     </div>
   </div>
-  <div v-else class="loading">加载中...</div> <!-- 显示加载中 -->
+  <div v-else class="loading">加载中...</div> 
 </template>
 
 <script setup lang="ts">
@@ -75,7 +75,6 @@ const emit = defineEmits(['roleName'])
 
 // 定义响应式数据存储学生信息
 const studentInfo = ref(null)
-// 默认数据（用于接口未调用时展示）
 const defaultStudentInfo = {
   name: '未知',
   studentId: '未知',
@@ -123,19 +122,19 @@ const fetchStudentInfo = async () => {
 //      fetchDictData(apartmentDictCode, 'apartment')
   } catch (error) {
     console.error('获取学生信息失败:', error)
-    studentInfo.value = defaultStudentInfo // 如果接口调用失败，使用默认数据
+    studentInfo.value = defaultStudentInfo 
   }
 }
 // 生日格式
 const formattedBirthday = computed(() => {
-  if (!studentInfo.value.birthday) return ''; // 处理空值
+  if (!studentInfo.value.birthday) return ''; 
 
   const birthday = new Date(studentInfo.value.birthday);
   const year = birthday.getFullYear();
 
-  // 获取月份，如果月份小于10则直接取月份数字（避免前导零）
-  const month = birthday.getMonth() + 1; // 月份是从0开始的，所以需要加1
-  const day = birthday.getDate(); // 直接获取日期
+  // 获取月份，如果月份小于10则直接取月份数字
+  const month = birthday.getMonth() + 1;
+  const day = birthday.getDate();
 
   return `${year}年${month}月${day}日`;
 });
@@ -522,9 +521,8 @@ onMounted(() => {
 <style scoped>
 /* 设置表单容器 */
 .form-container {
-  background-color: #fff; /* 白色背景 */
-  color: #333; /* 深色文本 */
-  /* width: 45vw; */
+  background-color: #fff;
+  color: #333;
   width:100%;
   height:100%;
   padding: 0px 0px;
@@ -534,7 +532,7 @@ h2 {
   text-align: center;
   font-size: 2.1vw;
   margin-bottom: 6vh;
-  color: #2d4059; /* 标题使用蓝色 */
+  color: #2d4059;
   font-weight: 600;
 }
 
@@ -544,36 +542,36 @@ h2 {
   flex-wrap: wrap;
   margin-bottom: 3.2vh;
   padding: 0.7vw;
-  border-bottom: 1px solid #e0e0e0; /* 细的分割线 */
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .form-item:last-child {
-  border-bottom: none; /* 最后一项不需要分割线 */
+  border-bottom: none;
 }
 
 .field {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 45%; /* 每个字段占一行的 45%，两项并排 */
-  margin-right: 5%; /* 右侧间距 */
+  width: 45%;
+  margin-right: 5%;
 }
 
 .field:last-child {
-  margin-right: 0; /* 最后一个字段不需要右侧间距 */
+  margin-right: 0;
 }
 
 .field label {
   font-size: 1.1vw;
   font-weight: 500;
-  color: #555; /* 深灰色文本 */
-  width: 7vw; /* 固定宽度 */
-  white-space: nowrap;/* 防止换行*/
+  color: #555;
+  width: 7vw; 
+  white-space: nowrap;
 }
 
 .field span {
   font-size: 1.1vw;
-  color: #333; /* 数据值颜色 */
+  color: #333;
   flex: 1; 
   text-align: left;
   overflow: hidden;
@@ -587,7 +585,7 @@ h2 {
   color: #999;
 }
 
-/* 响应式：调整小屏幕下的显示方式 */
+/* 响应式*/
 @media (max-width: 768px) {
   .form-container {
     padding: 10px;
@@ -595,19 +593,19 @@ h2 {
   }
 
   h2 {
-    font-size: 4vw; /* 调整小屏幕下的标题字体 */
+    font-size: 4vw; 
     margin-bottom: 2vh;
   }
 
 
   .field label {
-    font-size: 3.2vw; /* 字体适配小屏 */
+    font-size: 3.2vw;
     line-height: 4vw;
   }
 
   .field span {
     width: 50%;
-    font-size: 3.2vw; /* 字体适配小屏 */
+    font-size: 3.2vw;
     line-height: 4vw;
     text-align: left;
     margin-left:8vw;

@@ -1,7 +1,7 @@
 <template>
   <div class="password-form-container">
     <div class="form-title">修改密码</div>
-<!-- 1 -->
+
     <el-form :model="form" :rules="rules" ref="formRef" label-width="10vw" class="password-form">
       <el-form-item label="旧密码" prop="oldPassword">
         <template #label>
@@ -73,7 +73,7 @@ import axios from 'axios'
 import Axios from 'axios'
 
 // 获取对表单的引用
-const formRef = ref(null) // 这里定义 formRef
+const formRef = ref(null)
 
 // 表单数据
 const form = ref({
@@ -135,7 +135,7 @@ const resetPassword = async (oldPassword, newPassword) => {
 
     if (response.data.code === 200) {
       ElMessage.success('密码重置成功！');
-      // 三个密码输入框清空
+
       form.value.oldPassword = ''
       form.value.newPassword = ''
       form.value.confirmPassword = ''
@@ -154,7 +154,7 @@ const handleSave = async () => {
     await formRef.value.validate() 
     await resetPassword(form.value.oldPassword, form.value.newPassword)
   } catch (error) {
-    console.log('表单验证失败')
+    console.error('表单验证失败', error);
   }
 }
 
@@ -314,8 +314,6 @@ const handleClose = () => {
   }
   :deep(.el-form-item__label){
     font-size: 3vw;
-    /* margin-bottom: 1vw;
-    margin-top: 1vw; */
     flex:0.3 0 auto;
   }
 }

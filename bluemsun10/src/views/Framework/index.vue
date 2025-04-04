@@ -113,10 +113,10 @@
 
 <script lang="ts" setup>
 import { ref ,onMounted, computed,watch} from 'vue'
-import { ElMessage } from 'element-plus' // 导入 ElMessage 组件
-import axios from 'axios' // 导入 axios 库
+import { ElMessage } from 'element-plus'
+import axios from 'axios' 
 import { useRouter} from 'vue-router'
-import PersonalBox from '@/views/Framework/components/PersonalBox.vue' // 导入 PersonalBox 组件
+import PersonalBox from '@/views/Framework/components/PersonalBox.vue' 
 import PersonalText from '@/views/Framework/components/PersonalText.vue'
 import Axios from '@/views/Axios'
 import isLogin from '@/api/isLogin'
@@ -164,7 +164,6 @@ const handleBeforeClose = (done: Function) => {
 
 // 退出登录处理函数
 const handleLogout = async () => {
-  console.log('退出登录')
   try {
     const response = await Axios.post('http://106.54.24.243:8080/auth/logout', {})
     if (response.data.code === 200) {
@@ -186,26 +185,6 @@ const handleLogout = async () => {
     ElMessage.error('请求失败！')
   }
 }
-
-// 页面关闭删除token
-// import { onBeforeUnmount } from 'vue'
-// import { watch } from 'fs'
-// onBeforeUnmount(() => {
-//   localStorage.removeItem('token')
-//   localStorage.removeItem('client_id')
-//   localStorage.removeItem('role')
-//   console.log('Token has been removed from localStorage')
-// })
-// const isLoggedIn = ref(localStorage.getItem('isLoggedIn') === 'true');  // 可以根据你的存储方式修改
-// // 监听登录状态变化，如果未登录，跳转到登录页
-// watch(isLoggedIn, (newStatus) => {
-//   if (!newStatus) {
-//     router.push('/');  // 跳转到登录页面
-//   }
-// });
-// if (!isLoggedIn.value) {
-//   router.push('/');
-// }
 
 </script>
 
@@ -419,16 +398,16 @@ const handleLogout = async () => {
   }
 
   .title {
-    font-size: 6vw; /* 适配移动端 */
+    font-size: 6vw;
     margin: 0;
   }
 
   .el-dialog__header {
-    font-size: 5vw; /* 对话框标题字体大小调整 */
+    font-size: 5vw;
   }
 
   .el-dialog__body {
-    font-size: 5vw; /* 调整对话框内容字体大小 */
+    font-size: 5vw;
   }
 
   .el-dialog__footer {

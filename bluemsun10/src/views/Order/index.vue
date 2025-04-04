@@ -66,7 +66,7 @@
             <el-table-column label="操作" width="200" >
             <template #default="scope">
               <!-- {{console.log(scope.row.id)}} -->
-            <el-popconfirm v-if="scope.row.status==='待处理'" title="确定核销？" @confirm="delectOrders(scope.row.id)">
+            <el-popconfirm v-if="getStatusText(scope.row.status)==='待处理'" title="确定核销？" @confirm="delectOrders(scope.row.id)">
                 <template #reference>
                 <el-button text type="primary" class="table-btn ml10">
                         核销订单

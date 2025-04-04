@@ -25,7 +25,6 @@ export default {
       })
       .then(response => {
         if (response.status === 200) {
-          console.log('Success:', response.data);
           this.$router.replace({path: './index'})
           // 处理成功的逻辑，例如显示消息、更新状态等
         } else {

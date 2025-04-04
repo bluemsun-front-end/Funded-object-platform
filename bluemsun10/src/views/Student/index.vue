@@ -146,7 +146,6 @@ const selectedIds = ref([]) // 用来存储选中的学生ID
 const handleSelectionChange = (selection) => {
   // 提取选中行的学号（ID）
   selectedIds.value = selection.map((student) => student.userId)
-  console.log('选中的学生 ID:', selectedIds.value)
 }
 provide('selectedIds', selectedIds)
 
@@ -196,7 +195,6 @@ const getList = async (pageNum = 1, pageSize = query.value.pageSize, queryData: 
     )
     if (res.data.rows) {
       const { rows } = res.data
-      console.log(rows)
       query.value.pageNum = pageNum
       query.value.pageSize = pageSize
       tableData.value = rows
@@ -324,8 +322,6 @@ const handlePageChange = async (val: number) => {
   try {
     loadingStates.value.project = true;
     currentPage.value = val;
-    // 这里可以添加额外的数据获取逻辑（如果是后端分页）
-    console.log('当前页码（社会经历）:', val);
   } catch (error) {
     console.error('页码切换失败:', error);
     ElMessage.error('加载社会经历数据失败');
@@ -338,8 +334,6 @@ const handlePageChange2 = async (val: number) => {
   try {
     loadingStates.value.punish = true;
     currentPage2.value = val;
-    // 这里可以添加额外的数据获取逻辑（如果是后端分页）
-    console.log('当前页码（个人处分）:', val);
   } catch (error) {
     console.error('页码切换失败:', error);
     ElMessage.error('加载处分数据失败');
@@ -352,8 +346,6 @@ const handlePageChange3 = async (val: number) => {
   try {
     loadingStates.value.scholarship = true;
     currentPage3.value = val;
-    // 这里可以添加额外的数据获取逻辑（如果是后端分页）
-    console.log('当前页码（个人奖励）:', val);
   } catch (error) {
     console.error('页码切换失败:', error);
     ElMessage.error('加载奖励数据失败');

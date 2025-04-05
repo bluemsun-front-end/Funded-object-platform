@@ -81,7 +81,7 @@
         </el-table>
       </div>
       <div class="bottom">
-        <el-pagination layout="prev,pager,next,jumper,total" :page-size="11" :total="orderTotal" v-model="currentPage"  @current-change="handlePageChange"/>
+        <el-pagination layout="prev,pager,next,jumper,total" :page-size="9" :total="orderTotal" v-model="currentPage" :pager-count="5" @current-change="handlePageChange"/>
       </div>
     </div>
     <!-- 查看详情弹窗 -->
@@ -231,7 +231,11 @@ const fetchOrder = async (current) => {
       }
     });
     orders.value = response.data.rows; 
-    orderTotal.value = response.data.total; // 更新总订单数 
+    orderTotal.value = response.data.total; // 更新总订单数
+    console.log(response.data.total);
+    console.log(response.data.rows);
+
+     
   } catch (error) {
     console.error('请求商品数据失败:', error);
   }
@@ -323,7 +327,7 @@ const handlePageChange2 = (newPage) => {
     width: 280px;
     height: 30px;
     bottom: 25px;
-   right: 70px;
+   right: 100px;
     display: flex;
     justify-content: center;
     align-items: center;

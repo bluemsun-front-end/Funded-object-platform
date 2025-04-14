@@ -10,10 +10,10 @@
 import { ref } from 'vue';
 
 const images = ref([
-  { url: 'image/爱心超市4.jpg', link: 'https://www.nenu.edu.cn/' },
+  { url: 'image/爱心超市4.png', link: 'https://www.nenu.edu.cn/' },
   { url: 'image/爱心超市2.jpg', link: '#' },
-  { url: 'image/爱心超市1.jpg', link: 'https://clzc.nenu.edu.cn/' },
-  { url: 'image/爱心超市3.jpg', link: '#' },
+  { url: 'image/爱心超市1.png', link: 'https://clzc.nenu.edu.cn/' },
+  { url: 'image/爱心超市3.png', link: '#' },
   
 ]);
 

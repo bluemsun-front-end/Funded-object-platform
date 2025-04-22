@@ -49,7 +49,7 @@
           </el-table>
           </div>
           <div class="bottom">
-              <el-pagination layout="prev,pager,next,jumper,total" :page-size="5" :total="pagetotal" v-model="currentPage" @current-change="handlePageChange"/>
+              <el-pagination layout="prev,pager,next,jumper,total" :page-size="5" :total="pagetotal" v-model="currentPage" :pager-count="5" @current-change="handlePageChange"/>
           </div>
       </div>
       <!-- 增加进货记录 -->
@@ -828,7 +828,7 @@
       width: 280px;
       height: 30px;
       bottom: 25px;
-      right: 70px;
+      right: 120px;
       display: flex;
       justify-content: center;
       align-items: center;

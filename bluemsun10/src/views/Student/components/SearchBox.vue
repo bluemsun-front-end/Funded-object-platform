@@ -29,12 +29,16 @@
       />
     </div>
     <div class="input-row">
-      <el-input
+      <el-select
         v-model="searchData.degree"
         class="search-input"
         placeholder="学位"
         clearable
-      />
+      >
+        <el-option label="本科" value="0" />
+        <el-option label="研究生" value="1" />
+      </el-select>
+      <!-- 移除搜索未知专业的复选框 -->
     </div>
     <div class="button-row">
       <el-button @click="reset" type="primary" class="action-btn"
@@ -66,6 +70,7 @@
 import { reactive, inject, ref, computed } from "vue";
 import axios from "axios";
 import { ElMessage } from "element-plus";
+
 const authToken = localStorage.getItem("token");
 const token = `Bearer ${authToken}`;
 const emit = defineEmits(["search"]);
@@ -78,6 +83,7 @@ const searchData = reactive({
   degree: "",
 });
 
+// 移除搜索未知专业的复选框相关变量
 const selectedIds = ref(inject("selectedIds", []));
 
 // 计算是否有选中的条目
@@ -95,18 +101,25 @@ const reset = () => {
 
 const onSearch = () => {
   // 创建一个新的对象，用于发送给后端
-  const dataToSend = { ...searchData };
+  const dataToSend: any = { ...searchData };
 
-  // 转换学位字段
-  if (dataToSend.degree) {
-    const degreeText = dataToSend.degree.trim();
-    if (degreeText === "本科") {
-      dataToSend.degree = "0";
-    } else if (degreeText === "研究生") {
-      dataToSend.degree = "1";
-    }
-    // 如果输入的是其他内容，保持原样发送
+  // ========== 专业字段核心逻辑 ==========
+  if (dataToSend.major === "未知") {
+    // 1. 输入"未知" → 传空字符串
+    dataToSend.major = "";
+  } else if (dataToSend.major === "") {
+    // 2. 输入框为空 → 删除字段，不传
+    delete dataToSend.major;
   }
+  // 3. 输入其他内容 → 保留原值，正常传
+
+  // ========== 其他字段处理逻辑 ==========
+  // 空字符串则删除字段，不传；有值则保留
+  ["grade", "name", "studentId", "degree"].forEach((key) => {
+    if (dataToSend[key] === "") {
+      delete dataToSend[key];
+    }
+  });
 
   emit("search", dataToSend);
 };
